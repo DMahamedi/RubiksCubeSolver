@@ -26,20 +26,6 @@ class Cube:
         self.green = green
         self.orange = orange
 
-        #the values in the hashmaps are in order of front, top, right, bottom, left, and back relative to the key
-        # self.sides_orientations = {self.white: [self.white, self.red,self.green,self.orange,self.blue,self.yellow],
-        #                            self.blue: [self.blue, self.yellow,self.red,self.white,self.orange,self.green],
-        #                            self.red: [self.red, self.yellow,self.green,self.white,self.blue,self.orange],
-        #                            self.green: [self.green, self.yellow,self.orange,self.white,self.red,self.blue],
-        #                            self.orange: [self.orange, self.yellow,self.blue,self.white,self.green,self.red],
-        #                            self.yellow: [self.yellow, self.orange,self.green,self.red,self.blue,self.white]}
-        #FIXME: CAN'T USE THE LIST FOR A HASHMAP KEY. CONSIDER INSTEAD USING STRINGS LIKE 'white', ETC. IF ITS EVEN WORTH USING 
-        #FIXME: THIS METHOD AT ALL
-
-        #FIXME: THE ABOVE HASHMAP CAN BE USED INSTEAD OF THE ELABORATE 'findFrontFace' FUNCTION
-        #FIXME: GIVEN THE FRONT FACE AND THE SIDE BEING ROTATED (FRONT, TOP, RIGHT, ETC... ), RETURN A NUMBER. THE NUMBER CAN
-        #FIXME: BE AN INDEX CORRESPONDING TO A LIST ENTRY IN THE HASMAP (THE KEY WOULD BE STILL BE THE FRONT FACE)
-
     #BASIC, FUNCTIONALITIES
 
     def getWhite(self):
