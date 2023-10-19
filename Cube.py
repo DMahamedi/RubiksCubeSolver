@@ -114,7 +114,7 @@ class Cube:
         #so if you are trying to do a complex move such as rotate the top layer while facing the red side, it needs to interpret
         #that as a front-facing rotation
         #this function takes your front face and the side/layer you are rotating, and returns an appropriate 'side' (one of white,red,blue,etc)
-        #to which it can think of the move as a front on rotation. For example, facing while rotating top would return the red face
+        #to which it can think of the move as a front on rotation. For example, facing white rotating top would return the red face
 
         match face:
             case self.white:
