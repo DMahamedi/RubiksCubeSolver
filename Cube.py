@@ -109,8 +109,6 @@ class Cube:
     #INFORMATION RETREVAL
 
     def findFrontFace(self, face, side):
-        #FIXME: CAN BE USED TO FIND THE NECESSARY CORRESPONDING FACE FOR OTHER OPERATIONS
-        #FIXME: IT IS THEREFORE WORTH RENAMING THIS FUNCTION TO EXPAND ITS FUNCTIONALITY
         #the program will think of every rotations as being a clockwise rotation being done to a front facing face (which can be white,
         # red, blue, etc...)
         #so if you are trying to do a complex move such as rotate the top layer while facing the red side, it needs to interpret
@@ -237,9 +235,8 @@ class Cube:
             face[8] = newColumn[2]
 
     def findOutterTriplets(self, frontFace): #used for side cubies that are used rotating a face -- used by rotateCW()
-        #FIXME: COME UP WITH A BETTER NAME FOR THIS FUNCTION
         #find the triplets on the outer edge of the face
-        #because the faces are described TOP TO BOTTOM RELATIVE TO THE WHITE FACE
+        #because the faces are described top to bottom relative to the bottom face
         #the orientation of the cube means that for the program to access the triplets correctly while maintaing proper geometry,
         #it needs to access them differently depending on which 'front face' we are using as a reference
         #i.e. some cublets are part of a row from a different face, while others are part of a column
@@ -282,7 +279,7 @@ class Cube:
         rotatedFace[7] = frontFace[5]
         rotatedFace[8] = frontFace[2]
 
-        frontFace[:] = rotatedFace #FIXME: TEST THAT THIS WORKS WITH THE SCRAMBLE FUNCTION
+        frontFace[:] = rotatedFace
 
         for i in range(4):
             newTriplet = [] #the triplet which will be replacing the current one
@@ -323,15 +320,3 @@ class Cube:
                 case 6: #match face to yellow
                     face = self.yellow
             self.rotateCW(face)
-
-cube = Cube()
-cube.scrambleCube(25) 
-cube.printCube()
-print()
-face = cube.getOrange()
-cube.rotateCW(face)
-cube.printCube()
-print()
-
-
-cube.userOperation()

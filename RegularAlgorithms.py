@@ -93,18 +93,3 @@ class RegularAlgorithms(Cube):
                 print("had to rotate more than 4 times")
                 break
 
-
-newCube = RegularAlgorithms()
-# newCube.scrambleCube(505)
-# newCube.getWhiteCross()
-# newCube.printCube()
-# newCube.getWhiteCross()
-
-print()
-print()
-print()
-
-newCube.scrambleCube(1100)
-newCube.getWhiteCross()
-newCube.alignWhite()
-
