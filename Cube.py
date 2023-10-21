@@ -101,6 +101,7 @@ class Cube:
             temp = self.blue[t:t+3] + self.red[t:t+3] + self.green[t:t+3] + self.orange[t:t+3]
             print(temp)
         self.printFace(self.white)
+        print()
     
     def printCubeImproved(self): #(FIXME: NOT COMPLETED) prints cube using full color names instead of abbreviations
         #FIXME: ADD THIS FUNCTIONALITY
@@ -146,13 +147,13 @@ class Cube:
                     case 'top':
                         return self.yellow
                     case 'right':
-                        return self.blue
+                        return self.orange
                     case 'bottom':
                         return self.white
                     case 'left':
                         return self.red
                     case 'back':
-                        return self.red
+                        return self.blue
             case self.blue:
                 match side:
                     case 'top':

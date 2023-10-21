@@ -89,7 +89,7 @@ class RegularAlgorithms(Cube):
 
         #end of second section
 
-    def swapNeighboringWhiteEdges(self, firstEdge, secondEdge): # FIXME: ADD FUNCTIONALITY
+    def swapNeighboringWhiteEdges(self, firstFace, secondFace):
         """
         If you have two edges which are next to each other (rather than opposite, which is handled in swapOppositeWhiteEdges())
         this function will swap them.
@@ -104,8 +104,18 @@ class RegularAlgorithms(Cube):
 
         Implementations of this algorithm will depend on the edges being swapped
         """
+        topFace = self.yellow #the top face will always be yellow in this function
 
-    def swapOppositeWhiteEdges(self, firstEdge, secondEdge):
+        self.rotateCW(firstFace)
+        self.rotateCW(firstFace)
+        self.rotateCCW(topFace)
+        self.rotateCW(secondFace)
+        self.rotateCW(secondFace)
+        self.rotateCW(topFace)
+        self.rotateCW(firstFace)
+        self.rotateCW(firstFace) 
+
+    def swapOppositeWhiteEdges(self, firstFace, secondFace): 
         """
         Used to swap edges on the opposite sides of the white face
         It first moves the middle row/column that has the edges which need to be swapped to the opposite side of the cube
@@ -115,35 +125,30 @@ class RegularAlgorithms(Cube):
         NOTE: this move is physically equivalent to rotating the middle row/column twice, then rotating that face twice,
         then rotating that middle row/column two more itmes to be back in line with the white face.
         """
-        def swapOperation(firstFace, secondFace):
-            self.rotateCW(firstFace)
-            self.rotateCW(firstFace)
-            self.rotateCW(secondFace)
-            self.rotateCW(secondFace)
-
-            self.rotateCW(self.white)
-            self.rotateCW(self.white)
-
-            self.rotateCW(firstFace)
-            self.rotateCW(firstFace)
-            self.rotateCW(secondFace)
-            self.rotateCW(secondFace)
-
-        if firstEdge==1 and secondEdge==7:
-            leftFace = self.findFrontFace(self.white, 'left')
-            rightFace = self.findFrontFace(self.white, 'right')
-            swapOperation(leftFace, rightFace)
-
-        elif firstEdge==3 and secondEdge==5:
-            topFace = self.findFrontFace(self.white, 'top')
-            bottomFace = self.findFrontFace(self.white, 'bottom')
-            swapOperation(topFace, bottomFace)
-
-        else:
-            print("error in swapOpppositeWhiteEdges()")
+        self.rotateCW(firstFace)
+        self.rotateCW(firstFace)
+        self.rotateCW(secondFace)
+        self.rotateCW(secondFace)
+        self.rotateCW(self.white)
+        self.rotateCW(self.white)
+        self.rotateCW(firstFace)
+        self.rotateCW(firstFace)
+        self.rotateCW(secondFace)
+        self.rotateCW(secondFace)
 
     def alignWhite(self): #gets proper edge alignment once white cross is in place
-        firstEdge = self.matchColorToFace(self.white[1])
+        
+        while self.red[7] != 'r': #using the red face as a baseline
+            self.rotateCW(self.white)
+        
+        if self.green[7] != 'g': #going around the cube clockwise, checking edges
+            if self.orange == 'g':
+                self.swapNeighboringWhiteEdges(self.green, self.orange)
+            else:
+                self.swapOppositeWhiteEdges(self.red, self.orange)
+
+        if self.orange[7] != 'o': #no need to check the blue edge at this point
+            self.swapNeighboringWhiteEdges(self.orange, self.blue)
         
 
 cube = RegularAlgorithms()
@@ -152,10 +157,36 @@ cube.scrambleCube(500)
 
 cube.printCube()
 
-print()
-
 cube.getWhiteCross()
+# cube.userOperation()
+
+cube.alignWhite()
 
 cube.printCube()
 
-cube.userOperation()
+cube.scrambleCube()
+cube.getWhiteCross()
+cube.alignWhite()
+cube.printCube()
+
+cube.scrambleCube()
+cube.getWhiteCross()
+cube.alignWhite()
+cube.printCube()
+
+cube.scrambleCube()
+cube.getWhiteCross()
+cube.alignWhite()
+cube.printCube()
+
+cube.scrambleCube()
+cube.getWhiteCross()
+cube.alignWhite()
+cube.printCube()
+
+cube.scrambleCube()
+cube.getWhiteCross()
+cube.alignWhite()
+cube.printCube()
+
+# cube.userOperation()
