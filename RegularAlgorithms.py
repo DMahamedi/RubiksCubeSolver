@@ -11,6 +11,8 @@ class RegularAlgorithms(Cube):
     def __init__(self, white=['w']*9, red=['r']*9, blue=['b']*9, yellow=['y']*9, green=['g']*9, orange=['o']*9):
         super().__init__(white, red, blue, yellow, green, orange)
     
+    # solving the white layer
+
     def getWhiteCross(self): #gets white cross without regard for proper edge alignment
 
         def alignSideEdges(frontFace, topFace, leftFace, whiteEdgeIndex): #aligns white edges that are on non-yellow and non-white faces
@@ -41,47 +43,47 @@ class RegularAlgorithms(Cube):
                 self.rotateCW(frontFace)
 
         while self.white[1] != 'w' or self.white[3] != 'w' or self.white[5] != 'w' or self.white[7] != 'w':
+        #in testing, loop has never had to be run more than 3 times
         # first section: moving all white edges on the yellow face up to the white face 
-            face = self.findFrontFace(self.yellow, 'top')
+            face = self.findFace(self.yellow, 'top')
             whiteEdgeIndex = 7
             yellowEdgeIndex = 1
             alignYellowEdges(face, whiteEdgeIndex, yellowEdgeIndex)
 
-            face = self.findFrontFace(self.yellow, 'right')
+            face = self.findFace(self.yellow, 'right')
             whiteEdgeIndex = 5
             yellowEdgeIndex = 5
             alignYellowEdges(face, whiteEdgeIndex, yellowEdgeIndex)
 
-            face = self.findFrontFace(self.yellow, 'bottom')
+            face = self.findFace(self.yellow, 'bottom')
             whiteEdgeIndex = 1
             yellowEdgeIndex = 7
             alignYellowEdges(face, whiteEdgeIndex, yellowEdgeIndex)
 
-            face = self.findFrontFace(self.yellow, 'left')
+            face = self.findFace(self.yellow, 'left')
             whiteEdgeIndex = 3
             yellowEdgeIndex = 3
             alignYellowEdges(face, whiteEdgeIndex, yellowEdgeIndex)
-        #that concludes removing the white edges from yellow
 
         #second section: moving all white edges on the faces surrounding white up to the white face
-            face = self.findFrontFace(self.white, 'top') #red
+            face = self.findFace(self.white, 'top') #red
             whiteEdgeIndex = 1
             topFace = self.yellow #top face will always be yellow in this function, so it doesn't need to be changed later
-            leftFace = self.findFrontFace(face, 'left')
+            leftFace = self.findFace(face, 'left')
             alignSideEdges(face, topFace, leftFace, whiteEdgeIndex)
 
-            face = self.findFrontFace(self.white, 'right') #green
-            leftFace = self.findFrontFace(face, 'left')
+            face = self.findFace(self.white, 'right') #green
+            leftFace = self.findFace(face, 'left')
             whiteEdgeIndex = 5
             alignSideEdges(face, topFace, leftFace, whiteEdgeIndex)
 
-            face = self.findFrontFace(self.white, 'bottom') #orange
-            leftFace = self.findFrontFace(face, 'left')
+            face = self.findFace(self.white, 'bottom') #orange
+            leftFace = self.findFace(face, 'left')
             whiteEdgeIndex = 7
             alignSideEdges(face, topFace, leftFace, whiteEdgeIndex)
 
-            face = self.findFrontFace(self.white, 'left') #blue
-            leftFace = self.findFrontFace(face, 'left')
+            face = self.findFace(self.white, 'left') #blue
+            leftFace = self.findFace(face, 'left')
             whiteEdgeIndex = 3
             alignSideEdges(face, topFace, leftFace, whiteEdgeIndex)
 
@@ -132,7 +134,7 @@ g
         self.rotateCW(secondFace)
         self.rotateCW(secondFace)
 
-    def alignWhite(self): #gets proper edge alignment once white cross is in place
+    def alignWhite(self): #gets proper edge alignment once white cross is in place -- used by solveWhiteLayer()
         
         while self.red[7] != 'r': #using the red face as a baseline
             self.rotateCW(self.white)
@@ -146,25 +148,39 @@ g
         if self.orange[7] != 'o': #no need to check the blue edge at this point
             self.swapNeighboringWhiteEdges(self.orange, self.blue)
         
-    def solveFrontFacingCorner(self):
+    def solveFrontFacingCorner(self, face): #solves corners facing forwards, or on the right side of a face -- used by solveWhiteCorners()
+        topFace = self
+        topFace = self.findFace(face, 'top')
+        leftFace = self.findFace(face, 'left')
+
+        self.rotateCCW(topFace)
+        self.rotateCCW(leftFace)
+        self.rotateCW(topFace)
+        self.rotateCW(leftFace)
+
+    def solveSideFacingCorner(self, face): #solves corners facing sidewayas, or on the left side of a face -- used by solveWhiteCorners()
+        topFace = self.findFace(face, 'top')
+        leftFace = self.findFace(face, 'left')
+        
+        self.rotateCCW(leftFace)
+        self.rotateCCW(topFace)
+        self.rotateCW(leftFace)
+
+    def solveWhiteCorners(self): # master function for solving the white corners -- used by solveWhiteLayer()
+        # FIXME: ADD FUNCTIONALITY
         pass
 
-    def solveSideFacingCorner(self):
-        pass
+    def solveWhiteLayer(self): # master function for solving the white layer
+        self.getWhiteCross()
+        self.alignWhite()
+        self.solveWhiteCorners()
+        self.alignWhite() # NOTE: this last call might not be necessary, depending on how solveWhiteCorners() ends up being coded
 
-    def solveWhiteCorners(self):
-        """
-        my idea for corner solving is, since it is necessary to know the three colors associate to a corner,
-        why not move all relevant corner pieces to a single point on the cube so it is easier to identify them 
-        i.e. always make it so the white part is on red[0] and the other colors are on yellow[6] and blue[2]
-        that way it easier to identify which part of the white layer the corners should be moved to
-        NOTE: doing it that way will make it harder later on to track what moves to make for a user (since such moves would be redundant
-        and probably confuse a user)
-        """
+    # solving the middle layer
              
-    def moveEdgeToMiddleRight(self, face) #move edge on the top (along yellow face) to the middle layer on the RIGHT
-        topFace = self.findFrontFace(face, 'top')
-        rightFace = self.findFrontFace(face, 'right')
+    def moveEdgeToMiddleRight(self, face): #move edge on the top (along yellow face) to the middle layer on the RIGHT
+        topFace = self.findFace(face, 'top')
+        rightFace = self.findFace(face, 'right')
 
         self.rotateCW(topFace)
         self.rotateCW(rightFace)
@@ -176,8 +192,8 @@ g
         self.rotateCW(face)
 
     def moveEdgeToMiddleLeft(self, face): #move edge on the top (along yellow face) to the middle layer on the LEFT
-        topFace = self.findFrontFace(face, 'top')
-        leftFace = self.findFrontFace(face, 'left')
+        topFace = self.findFace(face, 'top')
+        leftFace = self.findFace(face, 'left')
 
         self.rotateCCW(topFace)
         self.rotateCCW(leftFace)

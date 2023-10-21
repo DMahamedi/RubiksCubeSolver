@@ -26,22 +26,22 @@ class Cube:
         self.green = green
         self.orange = orange
 
-    def getWhite(self):
+    def getWhite(self): #return white face
         return self.white
     
-    def getRed(self):
+    def getRed(self): #return red face
         return self.red
     
-    def getBlue(self):
+    def getBlue(self): #return blue face
         return self.blue
     
-    def getYellow(self):
+    def getYellow(self): #return yellow face
         return self.yellow
     
-    def getGreen(self):
+    def getGreen(self): #return green face
         return self.green
     
-    def getOrange(self):
+    def getOrange(self): #return orange face
         return self.orange
 
     def userOperation(self): #allows interactive modification of the cube
@@ -73,21 +73,6 @@ class Cube:
                 self.rotateCW(face)
             self.printCube()
 
-    def changeFace(self, faceName, updatedFace): #incase something happens and a face's data needs to be changed
-        match faceName:
-            case 'white':
-                self.white = updatedFace
-            case 'red':
-                self.red = updatedFace
-            case 'blue':
-                self.blue = updatedFace
-            case 'green':
-                self.green = updatedFace
-            case 'orange':
-                self.orange = updatedFace
-            case 'yellow':
-                self.yellow = updatedFace
-
     def printFace(self, face): #prints a specified face of the cube
         for i in range(3):
             temp = [' '] * 3 + face[3*i: 3*i+3] + [' '] * 6
@@ -106,18 +91,11 @@ class Cube:
         self.printFace(self.white)
         print()
     
-    def printCubeImproved(self): #(FIXME: NOT COMPLETED) prints cube using full color names instead of abbreviations
+    def printCubeImproved(self): # prints cube using full color names instead of abbreviations
         #FIXME: ADD THIS FUNCTIONALITY
         print("FIXME: FUNCTIONALITY NOT YET ADDED")
 
-    def findFrontFace(self, face, side):
-        #the program will think of every rotations as being a clockwise rotation being done to a front facing face (which can be white,
-        # red, blue, etc...)
-        #so if you are trying to do a complex move such as rotate the top layer while facing the red side, it needs to interpret
-        #that as a front-facing rotation
-        #this function takes your front face and the side/layer you are rotating, and returns an appropriate 'side' (one of white,red,blue,etc)
-        #to which it can think of the move as a front on rotation. For example, facing white rotating top would return the red face
-
+    def findFace(self, face, side): # given a face (red, white, etc.) and an assiociated side (front, back), returns face occupying that side
         match face:
             case self.white:
                 match side:
@@ -275,7 +253,7 @@ class Cube:
         elif frontFace == self.orange: #yellow, blue, white, green
             return [self.getFaceRows(self.yellow,'t',True), self.getFaceCols(self.blue,'l'), self.getFaceRows(self.white,'b',True), self.getFaceCols(self.green,'r')]
 
-    def rotateCW(self, frontFace): #used for all rotations
+    def rotateCW(self, frontFace): # master function used for all rotations
 
         triplets = self.findOutterTriplets(frontFace)
         lastTripletOld = triplets[3][0]
@@ -316,7 +294,7 @@ class Cube:
         self.rotateCW(frontFace)
         self.rotateCW(frontFace)
 
-    def scrambleCube(self, numMoves=25): #scrambles the cube randomly, default of 25 operations
+    def scrambleCube(self, numMoves=25): #scrambles the cube randomly, default of 25 random operations
         face = self.white
         for i in range(numMoves):
             val = random.randint(1,6) #chooses which side to rotate
