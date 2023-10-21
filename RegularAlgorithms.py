@@ -11,34 +11,6 @@ class RegularAlgorithms(Cube):
     def __init__(self, white=['w']*9, red=['r']*9, blue=['b']*9, yellow=['y']*9, green=['g']*9, orange=['o']*9):
         super().__init__(white, red, blue, yellow, green, orange)
     
-    def moveEdgePieces(self, face, edgePieceIndex): #NOTE: FOR THE TIME BEING, THIS WILL BE USED TO MOVE WHITE EDGE PIECES
-        nextFace = face
-        if face != self.yellow: #because yellow is in a weird place relative to white
-            if edgePieceIndex == 1:
-                self.rotateCW(face)
-                nextFace = self.findFrontFace(face,'right')
-                self.rotateCCW(nextFace)
-            elif edgePieceIndex == 3:
-                nextFace = self.findFrontFace(face,'left')
-                self.rotateCW(nextFace)
-            elif edgePieceIndex == 5:
-                nextFace = self.findFrontFace(face,'right')
-                self.rotateCCW(nextFace)
-            elif edgePieceIndex == 7: #FIXME: CHECK THAT THIS ACTUALLY WORKS FOR edgePieceIndex==7
-                nextFace = self.findFrontFace(face, 'bottom')
-                self.rotateCW(nextFace)
-        else:
-            if edgePieceIndex == 1:
-                nextFace = self.findFrontFace(face,'top')
-            elif edgePieceIndex == 3:
-                nextFace = self.findFrontFace(face, 'left')
-            elif edgePieceIndex == 5:
-                nextFace = self.findFrontFace(face, 'right')
-            elif edgePieceIndex == 7:
-                nextFace = self.findFrontFace(face, 'bottom')
-            self.rotateCW(nextFace)
-            self.rotateCW(nextFace)
-    
     def getWhiteCross(self):
         # the white cross is created without regard for the proper alignment of the edge pieces to the center pieces
         # alignment to the center pieces is handled seperately
@@ -51,10 +23,6 @@ class RegularAlgorithms(Cube):
                     self.rotateCW(self.white)
                 while frontFace[7] != 'w':
                     self.rotateCW(frontFace)
-
-                # FIXME: MAKE SURE THAT ROTATECCW IS APPROPRIATE FOR ALL FACES
-                # FIXME: IT COULD TURN OUT THAT ROTATECCW DOESN'T WORK IN ALL CASES
-                # FIXME: THAT APPLIES FOR ROTATING CCW BOTH THE BOTTOM AND TOP FACES
                 self.rotateCW(frontFace)
                 self.rotateCCW(leftFace)
                 self.rotateCCW(topFace)
@@ -98,11 +66,8 @@ class RegularAlgorithms(Cube):
         #that concludes removing the white edges from yellow
 
         #second section: moving all white edges on the faces surrounding white up to the white face
-            #this code will be repeated for red, blue, green, and orange
             face = self.findFrontFace(self.white, 'top') #red
             whiteEdgeIndex = 1
-            # FIXME: MONITOR THE USE OF face=self.color LATER FOR ERRORS
-            # FIXME: IT MIGHT CAUSE ERRORS WHEN ROTATING FACE OR SOMETHING IDK
             topFace = self.yellow #top face will always be yellow in this function, so it doesn't need to be changed later
             leftFace = self.findFrontFace(face, 'left')
             alignSideEdges(face, topFace, leftFace, whiteEdgeIndex)
@@ -124,7 +89,7 @@ class RegularAlgorithms(Cube):
 
         #end of second section
 
-    def swapNeighboringWhiteEdges(self, firstEdge, secondEdge):
+    def swapNeighboringWhiteEdges(self, firstEdge, secondEdge): # FIXME: ADD FUNCTIONALITY
         """
         If you have two edges which are next to each other (rather than opposite, which is handled in swapOppositeWhiteEdges())
         this function will swap them.
