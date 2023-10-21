@@ -150,7 +150,7 @@ class Cube:
                     case 'bottom':
                         return self.white
                     case 'left':
-                        return self.green
+                        return self.red
                     case 'back':
                         return self.red
             case self.blue:
@@ -190,6 +190,21 @@ class Cube:
                     case 'back':
                         return self.red
 
+    def matchColorToFace(self, color): #takes in color abbreviation like 'w' for white and spits back associated face (like 'r' becomes red)
+        match color:
+            case 'w':
+                return self.white
+            case 'b':
+                return self.blue
+            case 'r':
+                return self.red
+            case 'g':
+                return self.green
+            case 'o':
+                return self.orange
+            case 'y':
+                return self.yellow
+            
     def getFaceRows(self, face, row, reverse=False): #retrieves the faces top or bottom row -- used by findOutterTriplets()
         #t for top and b for bottom
         triplet = []
@@ -304,6 +319,7 @@ class Cube:
         self.rotateCW(frontFace)
 
     def scrambleCube(self, numMoves=25): #scrambles the cube randomly, default of 25 operations
+        face = self.white
         for i in range(numMoves):
             val = random.randint(1,6) #chooses which side to rotate
             match val:
