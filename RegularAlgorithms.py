@@ -343,5 +343,56 @@ g
         self.rotateCCW(topFace)
         self.rotateCCW(face)
 
-    def alignMiddleEdges(self): #aligns the middle edges
-        pass
+    def solveFaceMiddleLayer(self, frontFace): #solves the middle layer of a single face -- used by solveMiddleLayer()
+        leftFace = self.findFace(frontFace, 'left')
+        topFace = self.findFace(frontFace, 'top') #everytime solveFaceMiddleLayer() is called, this should just return self.yellow
+        rightFace = self.findFace(frontFace, 'right')
+        bottomFace = self.findFace(frontFace, 'bottom') #this should return self.white everytime
+        # NOTE: I am not yet sure if bottomFace will ever need to be used
+
+        frontFaceColor = frontFace[4]
+
+        leftEdgeColor = leftFace[4] #what colors the right and left edges **should** be
+        rightEdgeColor = rightFace[4]
+
+        leftEdgeCurrentColor = leftFace[5] #what colors the right and left edges actually are
+        rightEdgecurrentColor = rightFace[3]
+
+        frontFaceLeftColor = frontFace[3]
+        frontFaceRightColor = frontFace[5]
+
+        if leftEdgeCurrentColor != leftEdgeColor or frontFaceLeftColor != frontFaceColor:
+            if leftEdgeCurrentColor == frontFaceColor: #the edge piece is in the right place but it is reversed
+                self.moveEdgeToMiddleLeft(frontFace)
+                self.rotateCW(topFace)
+                self.rotateCW(topFace)
+                self.moveEdgeToMiddleLeft(frontFace)
+            else:
+                numRotations = 1
+                while topFace[7] != leftEdgeColor and frontFace[1] != frontFaceColor and numRotations <= 4:
+                    self.rotateCW(topFace)
+                    numRotations += 1
+                if numRotations != 4:
+                    self.moveEdgeToMiddleLeft(frontFace)
+            
+        if rightEdgecurrentColor != rightEdgeColor or frontFaceRightColor != frontFaceColor:
+            if rightEdgecurrentColor == frontFaceColor: #the edge piece is in the right place but it is reversed
+                self.moveEdgeToMiddleRight(frontFace)
+                self.rotateCW(topFace)
+                self.rotateCW(topFace)
+                self.moveEdgeToMiddleRight(frontFace)
+            else:
+                numRotations = 1
+                while topFace[7] != rightEdgeColor and frontFace[1] != frontFaceColor and numRotations <= 4:
+                    self.rotateCW(topFace)
+                    numRotations += 1
+                if numRotations != 4:
+                    self.moveEdgeToMiddleRight(frontFace)
+            
+
+    def solveMiddleLayer(self): #master function that solves the middle layer of the whole cube
+        while self.red[3:6] != ['r']*3 or self.green[3:6] != ['g']*3 or self.orange[3:6] != ['o']*3 or self.blue[3:6] != ['b']*3:
+            self.solveFaceMiddleLayer(self.red)
+            self.solveFaceMiddleLayer(self.green)
+            self.solveFaceMiddleLayer(self.orange)
+            self.solveFaceMiddleLayer(self.blue)
