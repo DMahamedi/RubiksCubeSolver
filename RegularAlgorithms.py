@@ -372,7 +372,7 @@ g
                 while topFace[7] != leftEdgeColor and frontFace[1] != frontFaceColor and numRotations <= 4:
                     self.rotateCW(topFace)
                     numRotations += 1
-                if numRotations != 4:
+                if numRotations < 4:
                     self.moveEdgeToMiddleLeft(frontFace)
             
         if rightEdgecurrentColor != rightEdgeColor or frontFaceRightColor != frontFaceColor:
@@ -386,13 +386,100 @@ g
                 while topFace[7] != rightEdgeColor and frontFace[1] != frontFaceColor and numRotations <= 4:
                     self.rotateCW(topFace)
                     numRotations += 1
-                if numRotations != 4:
+                if numRotations < 4:
                     self.moveEdgeToMiddleRight(frontFace)
             
-
     def solveMiddleLayer(self): #master function that solves the middle layer of the whole cube
-        while self.red[3:6] != ['r']*3 or self.green[3:6] != ['g']*3 or self.orange[3:6] != ['o']*3 or self.blue[3:6] != ['b']*3:
+
+        def middleLayerSolved(): #check if the middle layer is solved
+            if self.red[3:6] != ['r']*3 or self.green[3:6] != ['g']*3 or self.orange[3:6] != ['o']*3 or self.blue[3:6] != ['b']*3:
+                return False
+            else:
+                return True
+            
+        while not middleLayerSolved():
             self.solveFaceMiddleLayer(self.red)
             self.solveFaceMiddleLayer(self.green)
             self.solveFaceMiddleLayer(self.orange)
             self.solveFaceMiddleLayer(self.blue)
+
+            #if the self.solveFaceMiddleLayer(face) is not staggered,
+            #it can cause an infinite loop because one face can depend on a later face being solved
+            #the if-else statements to prevent the looop from going on longer than it needs to
+
+            if not middleLayerSolved():
+                self.solveFaceMiddleLayer(self.green)
+                self.solveFaceMiddleLayer(self.orange)
+                self.solveFaceMiddleLayer(self.blue)
+                self.solveFaceMiddleLayer(self.red)
+            else:
+                break
+
+            if not middleLayerSolved():
+                self.solveFaceMiddleLayer(self.orange)
+                self.solveFaceMiddleLayer(self.blue)
+                self.solveFaceMiddleLayer(self.red)
+                self.solveFaceMiddleLayer(self.green)
+            else:
+                break
+
+            if not middleLayerSolved():
+                self.solveFaceMiddleLayer(self.blue)
+                self.solveFaceMiddleLayer(self.red)
+                self.solveFaceMiddleLayer(self.green)
+                self.solveFaceMiddleLayer(self.orange)
+            else:
+                break
+
+    # getting the final layer
+
+    def yellowCrossAlgorithm(self, frontFace):
+        #note that frontFace will actually vary, and should never be self.yellow
+        topFace = self.findFace(frontFace, 'top') #this should always return self.yellow
+        rightFace = self.findFace(frontFace, 'right')
+
+        self.rotateCW(frontFace)
+        self.rotateCW(rightFace)
+        self.rotateCW(topFace)
+        self.rotateCCW(rightFace)
+        self.rotateCCW(topFace)
+        self.rotateCCW(frontFace)
+
+    def getYellowCross(self):
+        face = self.red
+        topFace = self.findFace(face, 'top') #this will always return yellow when face = self.red
+
+        while topFace[1] != 'y' or topFace[3] != 'y' or topFace[5] != 'y' or topFace[7] != 'y':
+
+            if (topFace[1] == 'y' and topFace[7] == 'y') or (topFace[3] == 'y' and topFace[5] == 'y'):
+                while topFace[7] == 'y':
+                    self.rotateCW(topFace)
+                self.yellowCrossAlgorithm(face)
+                continue
+            elif (topFace[1] == 'y' and topFace[5] == 'y') or (topFace[5] == 'y' and topFace[7] == 'y') \
+                or (topFace[7] == 'y' and topFace[3] == 'y') or (topFace[3] == 'y' and topFace[1] == 'y'):
+                while topFace[7] == 'y':
+                    self.rotateCW(topFace)
+                self.yellowCrossAlgorithm(face)
+                continue
+            else:
+                self.yellowCrossAlgorithm(face)
+    
+    def alignYellowCross(self): #aligns edge pieces of yellow cross. Note it uses a different algorithm from aligning the white cross
+        pass
+
+
+
+cube = RegularAlgorithms()
+
+cube.scrambleCube(5000)
+cube.printCube()
+cube.solveWhiteLayer()
+cube.printCube()
+cube.solveMiddleLayer()
+cube.printCube()
+
+for i in range(1000):
+    cube.scrambleCube(100)
+    cube.solveWhiteLayer()
+    cube.solveMiddleLayer()
