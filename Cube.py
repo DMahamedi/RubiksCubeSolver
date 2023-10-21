@@ -26,18 +26,21 @@ class Cube:
         self.green = green
         self.orange = orange
 
-    #BASIC, FUNCTIONALITIES
-
     def getWhite(self):
         return self.white
+    
     def getRed(self):
         return self.red
+    
     def getBlue(self):
         return self.blue
+    
     def getYellow(self):
         return self.yellow
+    
     def getGreen(self):
         return self.green
+    
     def getOrange(self):
         return self.orange
 
@@ -106,8 +109,6 @@ class Cube:
     def printCubeImproved(self): #(FIXME: NOT COMPLETED) prints cube using full color names instead of abbreviations
         #FIXME: ADD THIS FUNCTIONALITY
         print("FIXME: FUNCTIONALITY NOT YET ADDED")
-
-    #INFORMATION RETREVAL
 
     def findFrontFace(self, face, side):
         #the program will think of every rotations as being a clockwise rotation being done to a front facing face (which can be white,
@@ -230,8 +231,6 @@ class Cube:
             triplet[0][0], triplet[0][2] = triplet[0][2], triplet[0][0]
         return triplet
 
-   #CHANGING THE CUBE
-
     def changeFaceRow(self, face, newRow, row): #changes the appropriate row after a rotation -- used by rotateCW()
         #t for top and b for bottom
         if row == 't':
@@ -275,8 +274,6 @@ class Cube:
             return [self.getFaceRows(self.orange,'t'), self.getFaceRows(self.green,'t'), self.getFaceRows(self.red,'t')   ,self.getFaceRows(self.blue,'t')]
         elif frontFace == self.orange: #yellow, blue, white, green
             return [self.getFaceRows(self.yellow,'t',True), self.getFaceCols(self.blue,'l'), self.getFaceRows(self.white,'b',True), self.getFaceCols(self.green,'r')]
-
-    #ROTATIONS
 
     def rotateCW(self, frontFace): #used for all rotations
 

@@ -11,9 +11,7 @@ class RegularAlgorithms(Cube):
     def __init__(self, white=['w']*9, red=['r']*9, blue=['b']*9, yellow=['y']*9, green=['g']*9, orange=['o']*9):
         super().__init__(white, red, blue, yellow, green, orange)
     
-    def getWhiteCross(self):
-        # the white cross is created without regard for the proper alignment of the edge pieces to the center pieces
-        # alignment to the center pieces is handled seperately
+    def getWhiteCross(self): #gets white cross without regard for proper edge alignment
 
         def alignSideEdges(frontFace, topFace, leftFace, whiteEdgeIndex): #aligns white edges that are on non-yellow and non-white faces
             #whiteEdgeIndex ensures that we do no move a white edge into a position where there is already a white edge
@@ -87,9 +85,7 @@ class RegularAlgorithms(Cube):
             whiteEdgeIndex = 3
             alignSideEdges(face, topFace, leftFace, whiteEdgeIndex)
 
-        #end of second section
-
-    def swapNeighboringWhiteEdges(self, firstFace, secondFace):
+    def swapNeighboringWhiteEdges(self, firstFace, secondFace): #swaps adjacent edges -- used by alignWhite()
         """
         If you have two edges which are next to each other (rather than opposite, which is handled in swapOppositeWhiteEdges())
         this function will swap them.
@@ -115,13 +111,13 @@ class RegularAlgorithms(Cube):
         self.rotateCW(firstFace)
         self.rotateCW(firstFace) 
 
-    def swapOppositeWhiteEdges(self, firstFace, secondFace): 
+    def swapOppositeWhiteEdges(self, firstFace, secondFace): # swaps opposite edges -- used by alignWhite()
         """
         Used to swap edges on the opposite sides of the white face
         It first moves the middle row/column that has the edges which need to be swapped to the opposite side of the cube
         It then rotates that row/column 180 degrees so that the edges are now on opposite sides of the cube 
         and then moves the row/column back to the middle of the white face
-
+g
         NOTE: this move is physically equivalent to rotating the middle row/column twice, then rotating that face twice,
         then rotating that middle row/column two more itmes to be back in line with the white face.
         """
@@ -150,43 +146,47 @@ class RegularAlgorithms(Cube):
         if self.orange[7] != 'o': #no need to check the blue edge at this point
             self.swapNeighboringWhiteEdges(self.orange, self.blue)
         
+    def solveFrontFacingCorner(self):
+        pass
 
-cube = RegularAlgorithms()
+    def solveSideFacingCorner(self):
+        pass
 
-cube.scrambleCube(500)
+    def solveWhiteCorners(self):
+        """
+        my idea for corner solving is, since it is necessary to know the three colors associate to a corner,
+        why not move all relevant corner pieces to a single point on the cube so it is easier to identify them 
+        i.e. always make it so the white part is on red[0] and the other colors are on yellow[6] and blue[2]
+        that way it easier to identify which part of the white layer the corners should be moved to
+        NOTE: doing it that way will make it harder later on to track what moves to make for a user (since such moves would be redundant
+        and probably confuse a user)
+        """
+             
+    def moveEdgeToMiddleRight(self, face) #move edge on the top (along yellow face) to the middle layer on the RIGHT
+        topFace = self.findFrontFace(face, 'top')
+        rightFace = self.findFrontFace(face, 'right')
 
-cube.printCube()
+        self.rotateCW(topFace)
+        self.rotateCW(rightFace)
+        self.rotateCCW(topFace)
+        self.rotateCCW(rightFace)
+        self.rotateCCW(topFace)
+        self.rotateCCW(face)
+        self.rotateCW(topFace)
+        self.rotateCW(face)
 
-cube.getWhiteCross()
-# cube.userOperation()
+    def moveEdgeToMiddleLeft(self, face): #move edge on the top (along yellow face) to the middle layer on the LEFT
+        topFace = self.findFrontFace(face, 'top')
+        leftFace = self.findFrontFace(face, 'left')
 
-cube.alignWhite()
+        self.rotateCCW(topFace)
+        self.rotateCCW(leftFace)
+        self.rotateCW(topFace)
+        self.rotateCW(leftFace)
+        self.rotateCW(topFace)
+        self.rotateCW(face)
+        self.rotateCCW(topFace)
+        self.rotateCCW(face)
 
-cube.printCube()
-
-cube.scrambleCube()
-cube.getWhiteCross()
-cube.alignWhite()
-cube.printCube()
-
-cube.scrambleCube()
-cube.getWhiteCross()
-cube.alignWhite()
-cube.printCube()
-
-cube.scrambleCube()
-cube.getWhiteCross()
-cube.alignWhite()
-cube.printCube()
-
-cube.scrambleCube()
-cube.getWhiteCross()
-cube.alignWhite()
-cube.printCube()
-
-cube.scrambleCube()
-cube.getWhiteCross()
-cube.alignWhite()
-cube.printCube()
-
-# cube.userOperation()
+    def alignMiddleEdges(self): #aligns the middle edges
+        pass
