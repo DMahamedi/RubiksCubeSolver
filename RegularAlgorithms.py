@@ -140,16 +140,15 @@ g
             self.rotateCW(self.white)
         
         if self.green[7] != 'g': #going around the cube clockwise, checking edges
-            if self.orange == 'g':
+            if self.orange[7] == 'g':
                 self.swapNeighboringWhiteEdges(self.green, self.orange)
             else:
                 self.swapOppositeWhiteEdges(self.red, self.orange)
-
+        
         if self.orange[7] != 'o': #no need to check the blue edge at this point
             self.swapNeighboringWhiteEdges(self.orange, self.blue)
         
     def solveFrontFacingCorner(self, face): #solves corners facing forwards, or on the right side of a face -- used by solveWhiteCorners()
-        topFace = self
         topFace = self.findFace(face, 'top')
         leftFace = self.findFace(face, 'left')
 
@@ -159,22 +158,162 @@ g
         self.rotateCW(leftFace)
 
     def solveSideFacingCorner(self, face): #solves corners facing sidewayas, or on the left side of a face -- used by solveWhiteCorners()
-        topFace = self.findFace(face, 'top')
-        leftFace = self.findFace(face, 'left')
+        topFace = self.findFace(face, 'top') #returns self.yellow (assuming face=self.red by default)
+        leftFace = self.findFace(face, 'left') #returns self.blue (assuming face=self.red by default)
         
         self.rotateCCW(leftFace)
         self.rotateCCW(topFace)
         self.rotateCW(leftFace)
 
-    def solveWhiteCorners(self): # master function for solving the white corners -- used by solveWhiteLayer()
-        # FIXME: ADD FUNCTIONALITY
-        pass
+    def solveBottomFacingCorner(self, face): #solves corners facing the bottom (meaning that part of the yellow face is white) -- used by solveWhiteCorners()
+        leftFace = self.findFace(face, 'left') #returns self.blue (assuming face=self.red by default)
+        topFace = self.findFace(face, 'top') #returns self.yellow (assuming face=self.red by default)
+        
+        self.rotateCCW(leftFace)
+        self.rotateCW(topFace)
+        self.rotateCW(topFace)
+        self.rotateCW(leftFace)
+        self.rotateCW(topFace)
+        self.rotateCCW(leftFace)
+        self.rotateCCW(topFace)
+        self.rotateCW(leftFace)
 
-    def solveWhiteLayer(self): # master function for solving the white layer
+    def findWhiteCornersUPPER(self, leftCornerColor, rightCornerColor): #look in the cube for a specific white corner
+        face = self.findFace(self.white, 'back') #this returns self.yellow
+        leftFace = self.findFace(face, 'left') #this returns self.blue
+        bottomFace = self.findFace(face, 'bottom')
+
+        """
+        Since white corners cannot be found on edges, if follows that they can only be found on the top or bottom layer of a cube
+        In this case, that means that each white corner exists in some **any** orientation on the white face (bottom) or yellow face (upper)
+        The 'UPPER' in the function name is because this function checks the yellow face for white corners, and I could not think of a better name
+
+        The white-part of a white corner in top/upper layer may not be in the top layer itself. For example, the white part could be in the blue face
+        while the yellow face contains the blue part, etc. The function checks for each of the three possible arrangements
+
+        To reduce the number of places to check, this function rotates the top layer up to 4 times, each time checking if the corner at [7] is 
+        a white corner.
+        If the corner is a white corner, it figures out whether it is a frontFacingCorner, sideFacingCorner, or bottomFacingCorner,
+        returning 'front', 'side' and 'bottom' respectively.
+        """
+
+        numChecks = 1
+        while numChecks <= 4: #after 4 checks/rotations, we know that we have checked every corner of the yellow face
+            if face[6]==rightCornerColor and leftFace[2]==leftCornerColor and bottomFace[0]=='w':
+                return 'front'
+            elif face[6]==leftCornerColor and leftFace[2]=='w' and bottomFace[0]==rightCornerColor:
+                return 'side'
+            elif face[6]=='w' and leftFace[2]==rightCornerColor and bottomFace[0]==leftCornerColor:
+                return 'bottom'
+            else:
+                self.rotateCW(face)
+                numChecks += 1
+            #NOTE: THERE ARE TECHNICALLY OTHER WAYS THE CORNERS COULD BE ARRANGED, BUT THE OTHER ARRANGEMENTS ARE ONLY POSSIBLE IF 
+            # THE CORNERS HAVE BEEN FLIPPED
+            # In the future, that could be a good way to tell the users whether or not their cube has been tampered with/has flipped corners
+            # and possibly tell them how to flip the corners back
+
+        return 'x' #for debugging, incase it doesn't find any corners    
+    
+    def findWhiteCornersLOWER(self, leftCornerColor, rightCornerColor): #search bottom of cube for specific white corner, move to top layer if found
+        face = self.white
+        leftFace = self.findFace(face, 'left') #returns self.blue
+        topFace = self.findFace(face, 'top') #returns self.red
+        backFace = self.findFace(face, 'back') #returns self.yellow, only used in moveCorner()
+        """
+        This function only checks if there is a misplaced white corner in the lower layer (which is self.white)
+        and doesn't provide any more information beyond that. The reason is because to solve a white corner in the lower layer,
+        the corner gets moved to the upper layer. 
+        Therefore, this program just checks if a white corner is in the upper layer and if it is, moves it to the upper layer
+        and then letters findWhiteCornersUPPER() handle the rest.
+        As a consequence, this function also does not check whether a corner arrangement is valid (like if a corner has been flipped)
+        like findWhiteCornersUPPER() does, since that will be handled later.
+        """
+        def moveCorner(): #perform to move white corners to the top layer
+            self.rotateCCW(leftFace)
+            self.rotateCW(backFace)
+            self.rotateCW(backFace)
+            self.rotateCW(leftFace)
+
+        numChecks = 1
+        while numChecks <= 4:
+            if face[0]=='w' and leftFace==leftCornerColor and topFace==rightCornerColor:
+                break #skip this case because in this case the corner is oriented correctly
+                #this case presumably does not happen because if a corner is oriented correctly,
+                #identifyWhiteCorners() and/or solveWhiteCorners() should not call this function
+                #this case is added as a backup
+            elif face[0]=='w' and leftFace[8]==rightCornerColor and topFace[6]==leftCornerColor:
+                moveCorner()
+                break
+            elif face[0]==leftCornerColor and leftFace[8]=='w' and topFace[6]==rightCornerColor:
+                moveCorner()
+                break
+            elif face[0]==leftCornerColor and leftFace[8]==rightCornerColor and topFace[6]=='w':
+                moveCorner()
+                break
+            elif face[0]==rightCornerColor and leftFace[8]=='w' and topFace[6]==leftCornerColor:
+                moveCorner()
+                break
+            elif face[0]==rightCornerColor and leftFace[8]==leftCornerColor and topFace[6]=='w':
+                moveCorner()
+                break
+            else:
+                numChecks += 1
+                self.rotateCW(face)
+            
+        while numChecks <= 4: #this step is necessary to return the white face of the cube to its original state when this function was called
+            #otherwise the white edges will not line up with the desired leftCorner and rightCorner
+            self.rotateCW(face)
+            numChecks += 1
+
+    def solveWhiteCorners(self): #solves the white corners
+        face = self.white
+        leftFace = self.findFace(face, 'left') #returns self.blue
+        rightFace = self.findFace(face, 'top') #returns self.red
+
+        frontFace = self.red #all operations solving the white corners will be done by considering the red face as the default front
+
+        """
+        Every corner has three sides and three colors. Here, we know that we want white[0] to be white, and leftCornerColor
+        and rightCornerColor tell us what the other two colors will be (geometrically, rightCornerColor will be on the 'top', but we still refer
+        to it as 'rightCornerColor')
+        
+        To reduce the complexity of gauging whether each corner is in the correct place, and finding the locations of finding
+        relevant corners throughout the cube, the program will ***always rotate the faces in such a way that the necessary corner pieces can be 
+        looked for in the same place***.
+        That is, a corner on the white face that needs to be solved will always be rotated so it is at white[0], so that we can always check the
+        corners other colors by looking in self.blue and self.red
+        """
+
+        while self.white != ['w'] * 9:
+            leftCornerColor = leftFace[7] #returns self.blue[7]
+            rightCornerColor = rightFace[7] #returns self.red[7]
+
+            cornerUnsolved = False
+            cornerLocation = ""
+
+            #checking if the corner colors matches the edge color
+            if leftCornerColor != leftFace[8] or rightCornerColor != rightFace[6] or face[0] != 'w':
+                cornerUnsolved = True
+            
+            if cornerUnsolved:
+                self.findWhiteCornersLOWER(leftCornerColor, rightCornerColor)
+                cornerLocation = self.findWhiteCornersUPPER(leftCornerColor, rightCornerColor)
+                if cornerLocation == 'front':
+                    self.solveFrontFacingCorner(frontFace)
+                elif cornerLocation == 'side':
+                    self.solveSideFacingCorner(frontFace)
+                elif cornerLocation == 'bottom':
+                    self.solveBottomFacingCorner(frontFace)
+            
+            self.rotateCW(face) #rotates self.white CW since face = self.white
+
+    def solveWhiteLayer(self): #master function for solving the white layer
         self.getWhiteCross()
         self.alignWhite()
         self.solveWhiteCorners()
-        self.alignWhite() # NOTE: this last call might not be necessary, depending on how solveWhiteCorners() ends up being coded
+        self.alignWhite() #after solveWhiteCorners, this will really only rotate the cube until the edge colors match the center colors
+        #of the faces surrounding self.white
 
     # solving the middle layer
              

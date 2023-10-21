@@ -41,7 +41,7 @@ class Cube:
     def getGreen(self): #return green face
         return self.green
     
-    def getOrange(self): #return orange face
+    def getOrange(self): #return  face
         return self.orange
 
     def userOperation(self): #allows interactive modification of the cube
@@ -312,3 +312,12 @@ class Cube:
                 case 6: #match face to yellow
                     face = self.yellow
             self.rotateCW(face)
+
+
+# cube = Cube()
+
+# cube.scrambleCube(500)
+
+# cube.printCube()
+
+# cube.userOperation()
