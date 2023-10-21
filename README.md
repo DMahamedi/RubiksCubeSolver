@@ -8,5 +8,5 @@ RegularAlgorithms.py is the class that will try to solve the cube using the gene
 ThistlewaiteCube.py does not yet contain any functionalities, but is intended to solve the cube using the Thistlewaite algorithm (which can solve the cube very quickly in less than 52 moves)
 
 In the near future I plan to transition the program from using Python lists to NumPy arrays to make the code clearer and easier to understand.
-Also in the works is a graphical user interface to visualize the cube and allow users to input their own cube states which the program can then solve.
+Also being planned is a graphical user interface to visualize the cube and allow users to input their own cube states which the program can then solve.
 
