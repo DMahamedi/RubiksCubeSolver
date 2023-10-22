@@ -13,3 +13,5 @@ ThistlewaiteCube.py does not yet contain any functionalities, but is intended to
 In the near future I plan to transition the program from using Python lists to NumPy arrays to make the code clearer and easier to understand.
 Also being planned is a graphical user interface to visualize the cube and allow users to input their own cube states which the program can then solve.
 
+# Pictures
+![Cube is first randomized](/RubiksCubeSolver/WorkingPictures/CubeRandomized.png)
