@@ -433,8 +433,8 @@ g
 
     # getting the final layer
 
-    def yellowCrossAlgorithm(self, frontFace):
-        #note that frontFace will actually vary, and should never be self.yellow
+    def doYellowLineAlgorithm(self, frontFace): #algorithm for when theres a line or a dot on the yellow face
+        #note that frontFace could actually vary, and should never be self.yellow
         topFace = self.findFace(frontFace, 'top') #this should always return self.yellow
         rightFace = self.findFace(frontFace, 'right')
 
@@ -444,42 +444,193 @@ g
         self.rotateCCW(rightFace)
         self.rotateCCW(topFace)
         self.rotateCCW(frontFace)
+    
+    def doYellowLAlgorithm(self, frontFace): #the algorithm for when there is an 'L' shape on the yellow face
+        topFace = self.findFace(frontFace, 'top')
+        rightFace = self.findFace(frontFace, 'right')
 
-    def getYellowCross(self):
+        self.rotateCW(frontFace)
+        self.rotateCW(topFace)
+        self.rotateCW(rightFace)
+        self.rotateCCW(topFace)
+        self.rotateCCW(rightFace)
+        self.rotateCCW(frontFace)
+
+    def solveYellowCross(self): #gets the yellow cross
         face = self.red
         topFace = self.findFace(face, 'top') #this will always return yellow when face = self.red
 
-        while topFace[1] != 'y' or topFace[3] != 'y' or topFace[5] != 'y' or topFace[7] != 'y':
+        def getNumEdges(): #counts the number of yellow edges
+            numEdges = 0
+            if topFace[1]=='y':
+                numEdges +=1
+            if topFace[3]=='y':
+                numEdges +=1
+            if topFace[5]=='y':
+                numEdges +=1
+            if topFace[7]=='y':
+                numEdges +=1
+            return numEdges
 
-            if (topFace[1] == 'y' and topFace[7] == 'y') or (topFace[3] == 'y' and topFace[5] == 'y'):
-                while topFace[7] == 'y':
-                    self.rotateCW(topFace)
-                self.yellowCrossAlgorithm(face)
-                continue
-            elif (topFace[1] == 'y' and topFace[5] == 'y') or (topFace[5] == 'y' and topFace[7] == 'y') \
-                or (topFace[7] == 'y' and topFace[3] == 'y') or (topFace[3] == 'y' and topFace[1] == 'y'):
-                while topFace[7] == 'y':
-                    self.rotateCW(topFace)
-                self.yellowCrossAlgorithm(face)
-                continue
-            else:
-                self.yellowCrossAlgorithm(face)
-    
+        while getNumEdges() != 4:
+            while topFace[7] == 'y':
+                self.rotateCW(topFace)
+
+            if getNumEdges() == 0:
+                self.doYellowLineAlgorithm(face)
+            elif getNumEdges() == 2:
+                if topFace[3] == 'y' and topFace[5] == 'y': #topFace[1]==topFace[7]=='y' prevented by nested while loop
+                    self.doYellowLineAlgorithm(face)
+                else:
+                    while topFace[1] != 'y' or topFace[3] != 'y':
+                        self.rotateCW(topFace)
+                    self.doYellowLAlgorithm(face)
+
+    def swapAdjacentYellowEdges(self, frontFace): #swaps a yellow edge with the next yellow edge going clockwise
+        #note that frontFace should never be yellow
+        topFace = self.findFace(frontFace, 'top') #should always return yellow
+        rightFace = self.findFace(frontFace, 'right')
+
+        self.rotateCW(rightFace)
+        self.rotateCW(topFace)
+        self.rotateCCW(rightFace)
+        self.rotateCW(topFace)
+        self.rotateCW(rightFace)
+        self.rotateCW(topFace)
+        self.rotateCW(topFace)
+        self.rotateCCW(rightFace)
+        self.rotateCW(topFace)
+
     def alignYellowCross(self): #aligns edge pieces of yellow cross. Note it uses a different algorithm from aligning the white cross
-        pass
+        topFace = self.yellow
+        face = self.red
+
+        def crossAligned(): #check if the cross is aligned
+            while self.red[1] != 'r':
+                self.rotateCW(topFace)
+            if self.red[1]=='r' and self.green[1]=='g' and self.orange[1]=='o' and self.blue[1]=='b':
+                return True
+            else:
+                return False
+
+        while not crossAligned(): #note that crossAligned() will always rotate the yellow face
+            #until the bottom edge matches the red face, so that part of the cube will always be aligned when we go through this loop
+            #That is important because the code in this loop is structure around the assumption red[1]=='r'
+            
+            if self.blue[1] != 'b':
+                self.swapAdjacentYellowEdges(self.blue)
+            
+            if self.orange[1] != 'o':
+                self.swapAdjacentYellowEdges(self.orange)
+
+            #here we are just swapping blue[1] with orange[1] and (if necessary) orange[1] and green[1] 
+            #until things work out
+    
+    def moveYellowCorner(self, frontFace): #algorithm for moving yellow corners into place
+        rightFace = self.findFace(frontFace, 'right')
+        bottomFace = self.findFace(frontFace, 'bottom')
+
+        self.rotateCCW(rightFace)
+        self.rotateCCW(bottomFace)
+        self.rotateCW(rightFace)
+        self.rotateCW(bottomFace)
+
+    def positionYellowCorners(self, frontFace):
+        topFace = self.findFace(frontFace, 'top')
+        rightFace = self.findFace(frontFace, 'right')
+        leftFace = self.findFace(frontFace, 'left')
+
+        self.rotateCW(topFace)
+        self.rotateCW(rightFace)
+        self.rotateCCW(topFace)
+        self.rotateCCW(leftFace)
+        self.rotateCW(topFace)
+        self.rotateCCW(rightFace)
+        self.rotateCCW(topFace)
+        self.rotateCW(leftFace)
+
+    def moveYellowCorner(self, frontFace):
+        rightFace = self.findFace(frontFace, 'right')
+        bottomFace = self.findFace(frontFace, 'bottom')
+
+        self.rotateCCW(rightFace)
+        self.rotateCCW(bottomFace)
+        self.rotateCW(rightFace)
+        self.rotateCW(bottomFace)
+
+    def solveYellowCorners(self): #gets the yellow corners into place, completing the cube
+        frontFace = self.red
+        leftFace = self.findFace(frontFace, 'left') #returns self.blue
+        topFace = self.findFace(frontFace, 'top') #returns self.yellow
+        rightFace = self.findFace(frontFace, 'right') #returns self.green
+
+        def checkIfGoodCorner(): # a good corner is a yellow corner that is placed correctly (roughly speaking)
+            #the if statements show the conditions to be a good corner
+            if rightFace[0]=='y' and frontFace[2]==rightFace[1] and topFace[8]==frontFace[1]:
+                return True
+            elif frontFace[2]=='y' and rightFace[0]==frontFace[1] and topFace[8]==rightFace[1]:
+                return True
+            elif topFace[8]=='y' and frontFace[2]==frontFace[1] and rightFace[0]==rightFace[1]:
+                return True
+            else:
+                return False
+
+        def findGoodCorner():
+            for i in range(4):
+                if checkIfGoodCorner():
+                    break
+                else:
+                    self.rotateCW(topFace)
+        
+        def getNumGoodCorners():
+            numGoodCorners = 0
+            for i in range(4):
+                if checkIfGoodCorner():
+                    numGoodCorners += 1
+                self.rotateCW(topFace)
+            return numGoodCorners
+        
+        def moveCorner(): #moves a 'good' corner to be in the top right of front face
+            while frontFace[2] != 'y':
+                self.rotateCW(topFace)
+
+        if getNumGoodCorners() == 0:
+            self.positionYellowCorners(frontFace)
+        
+        findGoodCorner()
+        if getNumGoodCorners != 4:
+            self.positionYellowCorners(frontFace)
+        findGoodCorner()
+        if getNumGoodCorners != 4:
+            self.positionYellowCorners(frontFace)
+
+        cube.printCube()
+
+        while topFace != ['y']*9:
+            moveCorner()
+            self.moveYellowCorner(frontFace)
 
 
+
+
+        cube.printCube()
+
+    def solveCube(self): #master function to solve the cube
+        self.solveWhiteLayer()
+        self.solveMiddleLayer()
+        self.solveYellowCross()
+        self.alignYellowCross()
 
 cube = RegularAlgorithms()
 
 cube.scrambleCube(5000)
-cube.printCube()
-cube.solveWhiteLayer()
-cube.printCube()
-cube.solveMiddleLayer()
+
+
+cube.scrambleCube(100)
+cube.solveCube()
 cube.printCube()
 
-for i in range(1000):
-    cube.scrambleCube(100)
-    cube.solveWhiteLayer()
-    cube.solveMiddleLayer()
+cube.solveYellowCorners()
+cube.printCube()
+
+cube.userOperation()
