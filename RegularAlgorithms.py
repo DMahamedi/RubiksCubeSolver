@@ -590,47 +590,28 @@ g
                 self.rotateCW(topFace)
             return numGoodCorners
         
-        def moveCorner(): #moves a 'good' corner to be in the top right of front face
-            while frontFace[2] != 'y':
-                self.rotateCW(topFace)
-
-        if getNumGoodCorners() == 0:
+        while getNumGoodCorners() != 4:
+            findGoodCorner()
             self.positionYellowCorners(frontFace)
-        
-        findGoodCorner()
-        if getNumGoodCorners != 4:
-            self.positionYellowCorners(frontFace)
-        findGoodCorner()
-        if getNumGoodCorners != 4:
-            self.positionYellowCorners(frontFace)
-
-        cube.printCube()
 
         while topFace != ['y']*9:
-            moveCorner()
-            self.moveYellowCorner(frontFace)
-
-
-
-
-        cube.printCube()
+            findGoodCorner()
+            while topFace[8] != 'y':
+                self.moveYellowCorner(frontFace)
+            self.rotateCW(topFace)
+    
+    def alignYellowFace(self): #aligns the yellow face
+        #technically this could be done by alignYellowCross(), this function is just here to be explicit about what it is doing
+        while self.red[1] != 'r':
+            self.rotateCW(self.yellow)
+    
+    def solveYellowLayer(self): #master function for solving the yellow layer (the final layer)
+        self.solveYellowCross()
+        self.alignYellowCross()
+        self.solveYellowCorners()
+        self.alignYellowFace()
 
     def solveCube(self): #master function to solve the cube
         self.solveWhiteLayer()
         self.solveMiddleLayer()
-        self.solveYellowCross()
-        self.alignYellowCross()
-
-cube = RegularAlgorithms()
-
-cube.scrambleCube(5000)
-
-
-cube.scrambleCube(100)
-cube.solveCube()
-cube.printCube()
-
-cube.solveYellowCorners()
-cube.printCube()
-
-cube.userOperation()
+        self.solveYellowLayer()
