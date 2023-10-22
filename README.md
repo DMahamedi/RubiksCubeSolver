@@ -17,7 +17,7 @@ The most common approach to solving the Rubiks cube is to use a layer-by-layer a
 ### The following demonstration solves the cube in a three-step process
 ```
 
-cube = RegularAlgorithms()
+cube = StandardCube()
 cube.scrambleCube(1000) #1000 random moves to scramble the cube
 print('The cube has been randomized: ')
 cube.printCube()
@@ -52,7 +52,7 @@ Finally, the program solves the top and final layer, which is usually the yellow
 
 ### Master function to get the solution in one function call
 ```
-cube = RegularAlgorithms() #creating the cube
+cube = StandardCube()
 cube.scrambleCube(1000) #scrambles the cube for 1000 randomized moves
 print("Randomized cube: ")
 cube.printCube()
