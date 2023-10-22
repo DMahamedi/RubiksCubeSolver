@@ -312,12 +312,3 @@ class Cube:
                 case 6: #match face to yellow
                     face = self.yellow
             self.rotateCW(face)
-
-
-# cube = Cube()
-
-# cube.scrambleCube(500)
-
-# cube.printCube()
-
-# cube.userOperation()
