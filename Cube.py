@@ -6,16 +6,10 @@ class Cube:
     DESCRIPTION AND PLANS
     this program includes the basic functionality needed to solve a rubiks cube, including an ability to input
     the cubes current state, the ability to rotate sides and keep track of what happens.
-    First, I will add the basic algorithms which are used to solve the cube, and implement them using the functions defined here in.
-    Next, I will attempt to use the programs abilities to also solve the cube with much more sophisticated algorithms 
-    which can be found on this wikipedia page: 
+    standardCube() inherits from this class to solve the cube.
+    I am hoping to implement more sophisticated algorithms than the ones used in RegularAlgorithms.py, namely the algorithms listed
+    here:
     https://en.wikipedia.org/wiki/Optimal_solutions_for_the_Rubik%27s_Cube#Thistlethwaite's_algorithm
-    """
-
-    """
-    TO DO: 
-    IMPLEMENT THISTLEWAITES ALGORITHM
-    USEFUL REFERENCE: https://www.jaapsch.net/puzzles/thistle.htm
     """
 
     def __init__(self, white=['w']*9, red=['r']*9, blue=['b']*9, yellow=['y']*9, green=['g']*9, orange=['o']*9):
