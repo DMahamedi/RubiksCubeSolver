@@ -2,7 +2,7 @@
 
 This is a program I am developing that automatically solve a Rubiks cube. Cube.py is the base class that contains all of the most important functionality to rotate, modify, and model the cube. The plan is to use the base class to implement a variety of Rubiks cube solving techniques, with the first algorithms I am implementing being the Thistlewaite algorithm and the more generic beginner algorithms.
 
-Right now, the program is able to solve the  **entire cube** using the most common beginner algorithms using RegularAlgorithms.py
+Right now, the program is able to solve the  ***entire cube*** using the most common beginner algorithms within RegularAlgorithms.py
 
 Cube.py contains the important functionalities which the algorithms will use to solve the cubes (namely the rotation function, since the rotations are very complex).
 
