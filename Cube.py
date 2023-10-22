@@ -6,8 +6,8 @@ class Cube:
     DESCRIPTION AND PLANS
     this program includes the basic functionality needed to solve a rubiks cube, including an ability to input
     the cubes current state, the ability to rotate sides and keep track of what happens.
-    standardCube() inherits from this class to solve the cube.
-    I am hoping to implement more sophisticated algorithms than the ones used in RegularAlgorithms.py, namely the algorithms listed
+    StandardCube() inherits from this class to solve the cube.
+    I plan to implement more sophisticated algorithms than the ones used in StandardCube.py, namely the algorithms listed
     here:
     https://en.wikipedia.org/wiki/Optimal_solutions_for_the_Rubik%27s_Cube#Thistlethwaite's_algorithm
     """

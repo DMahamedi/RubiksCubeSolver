@@ -15,3 +15,9 @@ class Thistlewaite(Cube):
 
 
     #G4 functions
+
+    """
+    TO DO: 
+    IMPLEMENT THISTLEWAITES ALGORITHM
+    USEFUL REFERENCE: https://www.jaapsch.net/puzzles/thistle.htm
+    """

@@ -1,6 +1,6 @@
 from Cube import Cube
 
-class RegularAlgorithms(Cube):
+class StandardCube(Cube):
 
     """
     NOTE:
@@ -627,16 +627,3 @@ g
             return False
         else:
             return True
-
-print()
-print()
-print()
-
-cube = RegularAlgorithms() #creating the cube
-cube.scrambleCube(1000) #scrambles the cube for 1000 randomized moves
-print("Randomized cube: ")
-cube.printCube()
-print('-----------------------')
-cube.solveCube()
-print("Solved cube: ")
-cube.printCube()
