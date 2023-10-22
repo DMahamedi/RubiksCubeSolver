@@ -47,7 +47,7 @@ cube.printCube()
 ```
 ![Program finishes solving the cube](WorkingPictures/CubeSolved.png)
 
-### There is also a master function to automate the solution process
+### There is also a master function to entirely automate the solution process
 ```
 cube = RegularAlgorithms() #creating the cube
 cube.scrambleCube(1000) #scrambles the cube for 1000 randomized moves
