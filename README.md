@@ -13,8 +13,9 @@ ThistlewaiteCube.py does not yet contain any functionalities, but is intended to
 In the near future I plan to transition the program from using Python lists to NumPy arrays to make the code clearer and easier to understand.
 Also being planned is a graphical user interface to visualize the cube and allow users to input their own cube states which the program can then solve.
 
-# Pictures
+# Pictures and explanations
 
+The most common approach to solving the Rubiks cube is to use a layer-by-layer approach, rather than the more intuitive face-by-face approach.
 ### Using the following code solves the cube in a three-step process
 ```
 
@@ -25,26 +26,30 @@ cube.printCube()
 print('-----------------------')
 ```
 
-![Cube is first randomized](WorkingPictures/CubeRandomized.png)
+![Cube is first randomized](WorkingPictures/CubeRandomized.png) 
 ```
 cube.solveWhiteLayer() #solves first layer
 print('First layer solved: ')
 cube.printCube()
 print('-----------------------')
 ```
+Here, the program solves the first layer, which is just the white face and its surrounding edges. The program also ensures that the color of the edges are lined up properly with the rest of the cube (for example, it makes sure that the blue edges surrounding the white face are all on the blue face, rather than spread out).
 ![Program solves the first layer](WorkingPictures/FirstLayerSolved.png)
+
 ```
 cube.solveMiddleLayer() #solves second layer
 print('Second layer solved: ')
 cube.printCube()
 print('-----------------------')
 ```
+The program next solves the middle layer.
 ![Program solves the second layer](WorkingPictures/SecondLayerSolved.png)
 ```
 cube.solveYellowLayer() #solves third and final layer
 print('The cube is solved: ')
 cube.printCube()
 ```
+Finally, the program solves the top and final layer, which is usually the yellow face (since it is opposite the yellow face). It also ensures that side edges of each yellow 'cubie' match the color of the face they are on. For example, it does not allow a yellow piece that has blue on one side to be placed such that the blue part is on the green face.
 ![Program finishes solving the cube](WorkingPictures/CubeSolved.png)
 
 ### There is also a master function to entirely automate the solution process
