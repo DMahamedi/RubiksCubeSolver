@@ -14,7 +14,7 @@ Also being planned is a graphical user interface to visualize the cube and allow
 # Pictures and explanations
 
 The most common approach to solving the Rubiks cube is to use a layer-by-layer approach, rather than the more intuitive face-by-face approach.
-### Using the following code solves the cube in a three-step process
+### The following demonstration solves the cube in a three-step process
 ```
 
 cube = RegularAlgorithms()
