@@ -50,7 +50,7 @@ cube.printCube()
 Finally, the program solves the top and final layer, which is usually the yellow face (since it is opposite the yellow face). It also ensures that side edges of each yellow 'cubie' match the color of the face they are on. For example, it does not allow a yellow piece that has blue on one side to be placed such that the blue part is on the green face.
 ![Program finishes solving the cube](WorkingPictures/CubeSolved.png)
 
-### There is also a master function to entirely automate the solution process
+### Master function to get the solution in one function call
 ```
 cube = RegularAlgorithms() #creating the cube
 cube.scrambleCube(1000) #scrambles the cube for 1000 randomized moves
