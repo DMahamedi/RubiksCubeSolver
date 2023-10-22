@@ -14,4 +14,52 @@ In the near future I plan to transition the program from using Python lists to N
 Also being planned is a graphical user interface to visualize the cube and allow users to input their own cube states which the program can then solve.
 
 # Pictures
-![Cube is first randomized](/RubiksCubeSolver/WorkingPictures/CubeRandomized.png)
+
+### Using the following code solves the cube in a three-step process
+```
+
+cube = RegularAlgorithms()
+cube.scrambleCube(1000) #1000 random moves to scramble the cube
+print('The cube has been randomized: ')
+cube.printCube()
+print('-----------------------')
+```
+
+![Cube is first randomized](WorkingPictures/CubeRandomized.png)
+```
+cube.solveWhiteLayer() #solves first layer
+print('First layer solved: ')
+cube.printCube()
+print('-----------------------')
+```
+![Program solves the first layer](WorkingPictures/FirstLayerSolved.png)
+```
+cube.solveMiddleLayer() #solves second layer
+print('Second layer solved: ')
+cube.printCube()
+print('-----------------------')
+```
+![Program solves the second layer](WorkingPictures/SecondLayerSolved.png)
+```
+cube.solveYellowLayer() #solves third and final layer
+print('The cube is solved: ')
+cube.printCube()
+```
+![Program finishes solving the cube](WorkingPictures/CubeSolved.png)
+
+### There is also a master function to automate the solution process
+```
+cube = RegularAlgorithms() #creating the cube
+cube.scrambleCube(1000) #scrambles the cube for 1000 randomized moves
+print("Randomized cube: ")
+cube.printCube()
+print('-----------------------')
+```
+![Cube randomized](WorkingPictures/CubeRandomized_V2.png)
+```
+cube.solveCube()
+print("Solved cube: ")
+cube.printCube()
+```
+![Cube solved](WorkingPictures/CubeSolved_V2.png)
+
