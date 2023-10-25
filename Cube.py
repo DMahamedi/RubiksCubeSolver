@@ -179,7 +179,7 @@ class Cube:
             case 'y':
                 return self.yellow
             
-    def getFaceRows(self, face, row, reverse=False): #retrieves the faces top or bottom row -- used by findOutterTriplets()
+    def __getFaceRows(self, face, row, reverse=False): #retrieves the faces top or bottom row -- used by __findOutterTriplets()
         #t for top and b for bottom
         triplet = []
         if row == 't':
@@ -191,7 +191,7 @@ class Cube:
             triplet[0][0], triplet[0][2] = triplet[0][2], triplet[0][0]
         return triplet
         
-    def getFaceCols(self, face, col, reverse=False): #retrieves the faces left or right column -- used by findOutterTriplets()
+    def __getFaceCols(self, face, col, reverse=False): #retrieves the faces left or right column -- used by __findOutterTriplets()
         #l for left and r for right
         triplet = []
         if col == 'l':
@@ -203,14 +203,14 @@ class Cube:
             triplet[0][0], triplet[0][2] = triplet[0][2], triplet[0][0]
         return triplet
 
-    def changeFaceRow(self, face, newRow, row): #changes the appropriate row after a rotation -- used by rotateCW()
+    def __changeFaceRows(self, face, newRow, row): #changes the appropriate row after a rotation -- used by rotateCW()
         #t for top and b for bottom
         if row == 't':
             face[0:3] = newRow
         elif row == 'b':
             face[6:] = newRow
     
-    def changeFaceColumn(self, face, newColumn, col): #changes the appropriate column after a rotation -- used by rotateCW()
+    def __changeFaceColumns(self, face, newColumn, col): #changes the appropriate column after a rotation -- used by rotateCW()
         #l for left and r for right
         if col == 'l':
             face[0] = newColumn[0]
@@ -221,7 +221,7 @@ class Cube:
             face[5] = newColumn[1]
             face[8] = newColumn[2]
 
-    def findOutterTriplets(self, frontFace): #used for side cubies that are used rotating a face -- used by rotateCW()
+    def __findOutterTriplets(self, frontFace): #used for side cubies that are used rotating a face -- used by rotateCW()
         #find the triplets on the outer edge of the face
         #because the faces are described top to bottom relative to the bottom face
         #the orientation of the cube means that for the program to access the triplets correctly while maintaing proper geometry,
@@ -235,21 +235,21 @@ class Cube:
         #NOTE: outter faces will always be listed in the clockwise order of
         #topFace, rightFace, bottomFace, leftFace
         if frontFace == self.white: #red, green, orange, blue
-            return [self.getFaceRows(self.red,'b'), self.getFaceRows(self.green,'b'), self.getFaceRows(self.orange,'b'), self.getFaceRows(self.blue,'b')]
+            return [self.__getFaceRows(self.red,'b'), self.__getFaceRows(self.green,'b'), self.__getFaceRows(self.orange,'b'), self.__getFaceRows(self.blue,'b')]
         elif frontFace == self.blue: #yellow, red, white, orange
-            return [self.getFaceCols(self.yellow,'l'), self.getFaceCols(self.red,'l'), self.getFaceCols(self.white,'l',True), self.getFaceCols(self.orange,'r',True)]
+            return [self.__getFaceCols(self.yellow,'l'), self.__getFaceCols(self.red,'l'), self.__getFaceCols(self.white,'l',True), self.__getFaceCols(self.orange,'r',True)]
         elif frontFace == self.red: #yellow, green, white, blue
-            return [self.getFaceRows(self.yellow,'b'), self.getFaceCols(self.green,'l',True), self.getFaceRows(self.white,'t'), self.getFaceCols(self.blue,'r',True)]
+            return [self.__getFaceRows(self.yellow,'b'), self.__getFaceCols(self.green,'l',True), self.__getFaceRows(self.white,'t'), self.__getFaceCols(self.blue,'r',True)]
         elif frontFace == self.green: #yellow, orange, white, red
-            return [self.getFaceCols(self.yellow,'r',True), self.getFaceCols(self.orange,'l',True), self.getFaceCols(self.white,'r'), self.getFaceCols(self.red,'r')]
+            return [self.__getFaceCols(self.yellow,'r',True), self.__getFaceCols(self.orange,'l',True), self.__getFaceCols(self.white,'r'), self.__getFaceCols(self.red,'r')]
         elif frontFace == self.yellow: #orange, green, red, blue
-            return [self.getFaceRows(self.orange,'t'), self.getFaceRows(self.green,'t'), self.getFaceRows(self.red,'t')   ,self.getFaceRows(self.blue,'t')]
+            return [self.__getFaceRows(self.orange,'t'), self.__getFaceRows(self.green,'t'), self.__getFaceRows(self.red,'t')   ,self.__getFaceRows(self.blue,'t')]
         elif frontFace == self.orange: #yellow, blue, white, green
-            return [self.getFaceRows(self.yellow,'t',True), self.getFaceCols(self.blue,'l'), self.getFaceRows(self.white,'b',True), self.getFaceCols(self.green,'r')]
+            return [self.__getFaceRows(self.yellow,'t',True), self.__getFaceCols(self.blue,'l'), self.__getFaceRows(self.white,'b',True), self.__getFaceCols(self.green,'r')]
 
     def rotateCW(self, frontFace): # master function used for all rotations
 
-        triplets = self.findOutterTriplets(frontFace)
+        triplets = self.__findOutterTriplets(frontFace)
         lastTripletOld = triplets[3][0]
         rotatedFace = [0] * 9
 
@@ -276,11 +276,11 @@ class Cube:
             else:
                 newTriplet = triplets[i-1][0] #otherwise, the new triplet can come from the previous face
 
-            #for changeFaceRow and changeFaceColumn, input is: i) face being updated, ii) the new triplet, and iii) the row/column being updated
+            #for __changeFaceRows and __changeFaceColumns, input is: i) face being updated, ii) the new triplet, and iii) the row/column being updated
             if isRowOrCol == 'row':
-                self.changeFaceRow(tripletFace,newTriplet,triplets[i][-1])
+                self.__changeFaceRows(tripletFace,newTriplet,triplets[i][-1])
             else:
-                self.changeFaceColumn(tripletFace,newTriplet,triplets[i][-1])
+                self.__changeFaceColumns(tripletFace,newTriplet,triplets[i][-1])
            
     def rotateCCW(self, frontFace): #rotates CCW using rotateCW three times
         #since rotating CCW is the same as rotating CW 3 times

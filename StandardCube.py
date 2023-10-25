@@ -13,7 +13,7 @@ class StandardCube(Cube):
     
     # solving the white layer
 
-    def getWhiteCross(self): #gets white cross without regard for proper edge alignment
+    def _getWhiteCross(self): #gets white cross without regard for proper edge alignment
 
         def alignSideEdges(frontFace, topFace, leftFace, whiteEdgeIndex): #aligns white edges that are on non-yellow and non-white faces
             #whiteEdgeIndex ensures that we do no move a white edge into a position where there is already a white edge
@@ -87,9 +87,9 @@ class StandardCube(Cube):
             whiteEdgeIndex = 3
             alignSideEdges(face, topFace, leftFace, whiteEdgeIndex)
 
-    def swapNeighboringWhiteEdges(self, firstFace, secondFace): #swaps adjacent edges -- used by alignWhite()
+    def __swampNeighboringWhiteEdges(self, firstFace, secondFace): #swaps adjacent edges -- used by _alignWhiteEdges()
         """
-        If you have two edges which are next to each other (rather than opposite, which is handled in swapOppositeWhiteEdges())
+        If you have two edges which are next to each other (rather than opposite, which is handled in __swapOppositeWhiteEdges())
         this function will swap them.
         The idea for this function is as follows:
             - Of the two edges that need to be swapped, take the one on the right (could also use left, but this will always use right for simplicity)
@@ -113,7 +113,7 @@ class StandardCube(Cube):
         self.rotateCW(firstFace)
         self.rotateCW(firstFace) 
 
-    def swapOppositeWhiteEdges(self, firstFace, secondFace): # swaps opposite edges -- used by alignWhite()
+    def __swapOppositeWhiteEdges(self, firstFace, secondFace): # swaps opposite edges -- used by _alignWhiteEdges()
         """
         Used to swap edges on the opposite sides of the white face
         It first moves the middle row/column that has the edges which need to be swapped to the opposite side of the cube
@@ -133,21 +133,21 @@ class StandardCube(Cube):
         self.rotateCW(secondFace)
         self.rotateCW(secondFace)
 
-    def alignWhite(self): #gets proper edge alignment once white cross is in place -- used by solveWhiteLayer()
+    def _alignWhiteEdges(self): #gets proper edge alignment once white cross is in place -- used by solveWhiteLayer()
         
         while self.red[7] != 'r': #using the red face as a baseline
             self.rotateCW(self.white)
         
         if self.green[7] != 'g': #going around the cube clockwise, checking edges
             if self.orange[7] == 'g':
-                self.swapNeighboringWhiteEdges(self.green, self.orange)
+                self.__swampNeighboringWhiteEdges(self.green, self.orange)
             else:
-                self.swapOppositeWhiteEdges(self.red, self.orange)
+                self.__swapOppositeWhiteEdges(self.red, self.orange)
         
         if self.orange[7] != 'o': #no need to check the blue edge at this point
-            self.swapNeighboringWhiteEdges(self.orange, self.blue)
+            self.__swampNeighboringWhiteEdges(self.orange, self.blue)
         
-    def solveFrontFacingCorner(self, frontFace): #solves corners facing forwards, or on the right side of a face -- used by solveWhiteCorners()
+    def __solveFrontFacingCorner(self, frontFace): #solves corners facing forwards, or on the right side of a face -- used by _solveWhiteCorners()
         #assume face=self.red by default
         topFace = self.findFace(frontFace, 'top')
         leftFace = self.findFace(frontFace, 'left')
@@ -157,7 +157,7 @@ class StandardCube(Cube):
         self.rotateCW(topFace)
         self.rotateCW(leftFace)
 
-    def solveSideFacingCorner(self, frontFace): #solves corners facing sidewayas, or on the left side of a face -- used by solveWhiteCorners()
+    def __solveSideFacingCorner(self, frontFace): #solves corners facing sidewayas, or on the left side of a face -- used by _solveWhiteCorners()
         #assume face=self.red by default
         topFace = self.findFace(frontFace, 'top') #returns self.yellow (assuming face=self.red by default)
         leftFace = self.findFace(frontFace, 'left') #returns self.blue (assuming face=self.red by default)
@@ -166,7 +166,7 @@ class StandardCube(Cube):
         self.rotateCCW(topFace)
         self.rotateCW(leftFace)
 
-    def solveBottomFacingCorner(self, frontFace): #solves corners facing the bottom (meaning that part of the yellow face is white) -- used by solveWhiteCorners()
+    def __solveBottomFacingCorner(self, frontFace): #solves corners facing the bottom (meaning that part of the yellow face is white) -- used by _solveWhiteCorners()
         #assume face=self.red by default
         leftFace = self.findFace(frontFace, 'left') #returns self.blue (assuming face=self.red by default)
         topFace = self.findFace(frontFace, 'top') #returns self.yellow (assuming face=self.red by default)
@@ -180,7 +180,7 @@ class StandardCube(Cube):
         self.rotateCCW(topFace)
         self.rotateCW(leftFace)
 
-    def findWhiteCornersUPPER(self, frontFace, cornerLeftColor, cornerTopColor): #look in the cube for a specific white corner
+    def __findWhiteCornersUPPER(self, frontFace, cornerLeftColor, cornerTopColor): #look in the cube for a specific white corner
         #by default, frontFace should be red
         leftFace = self.findFace(frontFace, 'left') #returns blue
         topFace = self.findFace(frontFace, 'top') #returns yellow
@@ -217,7 +217,7 @@ class StandardCube(Cube):
 
         return 'not found' #for debugging, incase it doesn't find any corners    
     
-    def findWhiteCornersLOWER(self, frontFace, cornerLeftColor, cornerTopColor): #search bottom of cube for specific white corner, move to top layer if found
+    def __findWhiteCornersLOWER(self, frontFace, cornerLeftColor, cornerTopColor): #search bottom of cube for specific white corner, move to top layer if found
         #by default, frontFace should be red
         bottomFace = self.findFace(frontFace, 'bottom') #returns white
         leftFace = self.findFace(frontFace, 'left') #returns blue
@@ -228,9 +228,9 @@ class StandardCube(Cube):
         and doesn't provide any more information beyond that. The reason is because to solve a white corner in the lower layer,
         the corner gets moved to the upper layer. 
         Therefore, this program just checks if a white corner is in the upper layer and if it is, moves it to the upper layer
-        and then letters findWhiteCornersUPPER() handle the rest.
+        and then letters __findWhiteCornersUPPER() handle the rest.
         As a consequence, this function also does not check whether a corner arrangement is valid (like if a corner has been flipped)
-        like findWhiteCornersUPPER() does, since that will be handled later.
+        like __findWhiteCornersUPPER() does, since that will be handled later.
         """
 
         def moveCorner(): #perform to move white corners to the top (yellow) layer
@@ -243,7 +243,7 @@ class StandardCube(Cube):
         while numChecks < 4:
             #NOTE: extensive trial and error led me to conclude the below nested if-statements are the only good way
             #to check for valid corners. 
-            #a list of if-else statements just leads to an infinite loop in solveWhiteCorners()
+            #a list of if-else statements just leads to an infinite loop in _solveWhiteCorners()
             #for future reference, the if-else statements are being left here as comments
             if bottomFace[0]=='w' or leftFace[8]=='w' or frontFace[6]=='w':
                 if bottomFace[0]==cornerLeftColor or leftFace[8]==cornerLeftColor or frontFace[6]==cornerLeftColor:
@@ -281,7 +281,7 @@ class StandardCube(Cube):
             self.rotateCW(bottomFace)
             numChecks += 1
 
-    def solveWhiteCorners(self):
+    def _solveWhiteCorners(self):
         face = self.white
         leftFace = self.findFace(face, 'left') #returns self.blue
         topFace = self.findFace(face, 'top') #returns self.red
@@ -320,29 +320,28 @@ class StandardCube(Cube):
                 cornerSolved = False
 
             if cornerSolved==False:
-                self.findWhiteCornersLOWER(frontFace, cornerLeftColor, cornerTopColor)
-                cornerLocation = self.findWhiteCornersUPPER(frontFace, cornerLeftColor, cornerTopColor)
+                self.__findWhiteCornersLOWER(frontFace, cornerLeftColor, cornerTopColor)
+                cornerLocation = self.__findWhiteCornersUPPER(frontFace, cornerLeftColor, cornerTopColor)
 
                 if cornerLocation == 'front':
-                    self.solveFrontFacingCorner(frontFace)
+                    self.__solveFrontFacingCorner(frontFace)
                 elif cornerLocation == 'side':
-                    self.solveSideFacingCorner(frontFace)
+                    self.__solveSideFacingCorner(frontFace)
                 elif cornerLocation == 'bottom':
-                    self.solveBottomFacingCorner(frontFace)
+                    self.__solveBottomFacingCorner(frontFace)
 
             self.rotateCW(face)
 
     def solveWhiteLayer(self): #master function for solving the white layer
-        self.getWhiteCross()
-        self.alignWhite()
-        self.solveWhiteCorners()
-        self.alignWhite() #after solveWhiteCorners, this will really only rotate the cube until the edge colors match the center colors
+        self._getWhiteCross()
+        self._alignWhiteEdges()
+        self._solveWhiteCorners()
+        self._alignWhiteEdges() #after _solveWhiteCorners, this will really only rotate the cube until the edge colors match the center colors
         #of the faces surrounding self.white
-
 
     # solving the middle layer
              
-    def moveEdgeToMiddleRight(self, face): #move edge on the top (along yellow face) to the middle layer on the RIGHT
+    def __moveEdgeToMiddleRight(self, face): #move edge on the top (along yellow face) to the middle layer on the RIGHT
         topFace = self.findFace(face, 'top')
         rightFace = self.findFace(face, 'right')
 
@@ -355,7 +354,7 @@ class StandardCube(Cube):
         self.rotateCW(topFace)
         self.rotateCW(face)
 
-    def moveEdgeToMiddleLeft(self, face): #move edge on the top (along yellow face) to the middle layer on the LEFT
+    def __moveEdgeToMiddleLeft(self, face): #move edge on the top (along yellow face) to the middle layer on the LEFT
         topFace = self.findFace(face, 'top')
         leftFace = self.findFace(face, 'left')
 
@@ -368,9 +367,9 @@ class StandardCube(Cube):
         self.rotateCCW(topFace)
         self.rotateCCW(face)
 
-    def solveFaceMiddleLayer(self, frontFace): #solves the middle layer of a single face -- used by solveMiddleLayer()
+    def __solveFaceMiddleLayer(self, frontFace): #solves the middle layer of a single face -- used by solveMiddleLayer()
         leftFace = self.findFace(frontFace, 'left')
-        topFace = self.findFace(frontFace, 'top') #everytime solveFaceMiddleLayer() is called, this should just return self.yellow
+        topFace = self.findFace(frontFace, 'top') #everytime __solveFaceMiddleLayer() is called, this should just return self.yellow
         rightFace = self.findFace(frontFace, 'right')
 
         frontFaceColor = frontFace[4]
@@ -386,29 +385,29 @@ class StandardCube(Cube):
 
         if leftEdgeCurrentColor != leftEdgeColor or frontFaceLeftColor != frontFaceColor:
             if leftEdgeCurrentColor == frontFaceColor: #the edge piece is in the right place but it is reversed
-                self.moveEdgeToMiddleLeft(frontFace)
+                self.__moveEdgeToMiddleLeft(frontFace)
                 self.rotateCW(topFace)
                 self.rotateCW(topFace)
-                self.moveEdgeToMiddleLeft(frontFace)
+                self.__moveEdgeToMiddleLeft(frontFace)
             else:
                 numRotations = 0
                 while topFace[7] != leftEdgeColor and frontFace[1] != frontFaceColor and numRotations < 4:
                     self.rotateCW(topFace)
                     numRotations += 1
-                self.moveEdgeToMiddleLeft(frontFace)
+                self.__moveEdgeToMiddleLeft(frontFace)
             
         if rightEdgecurrentColor != rightEdgeColor or frontFaceRightColor != frontFaceColor:
             if rightEdgecurrentColor == frontFaceColor: #the edge piece is in the right place but it is reversed
-                self.moveEdgeToMiddleRight(frontFace)
+                self.__moveEdgeToMiddleRight(frontFace)
                 self.rotateCW(topFace)
                 self.rotateCW(topFace)
-                self.moveEdgeToMiddleRight(frontFace)
+                self.__moveEdgeToMiddleRight(frontFace)
             else:
                 numRotations = 0
                 while topFace[7] != rightEdgeColor and frontFace[1] != frontFaceColor and numRotations < 4:
                     self.rotateCW(topFace)
                     numRotations += 1
-                self.moveEdgeToMiddleRight(frontFace)
+                self.__moveEdgeToMiddleRight(frontFace)
             
     def solveMiddleLayer(self): #master function that solves the middle layer of the whole cube
 
@@ -419,42 +418,42 @@ class StandardCube(Cube):
                 return True
 
         while not middleLayerSolved():
-            self.solveFaceMiddleLayer(self.red)
-            self.solveFaceMiddleLayer(self.green)
-            self.solveFaceMiddleLayer(self.orange)
-            self.solveFaceMiddleLayer(self.blue)
+            self.__solveFaceMiddleLayer(self.red)
+            self.__solveFaceMiddleLayer(self.green)
+            self.__solveFaceMiddleLayer(self.orange)
+            self.__solveFaceMiddleLayer(self.blue)
 
-            #if the self.solveFaceMiddleLayer(face) is not staggered,
+            #if the self.__solveFaceMiddleLayer(face) is not staggered,
             #it can cause an infinite loop because one face can depend on a later face being solved
             #the if-else statements to prevent the looop from going on longer than it needs to
 
             if not middleLayerSolved():
-                self.solveFaceMiddleLayer(self.green)
-                self.solveFaceMiddleLayer(self.orange)
-                self.solveFaceMiddleLayer(self.blue)
-                self.solveFaceMiddleLayer(self.red)
+                self.__solveFaceMiddleLayer(self.green)
+                self.__solveFaceMiddleLayer(self.orange)
+                self.__solveFaceMiddleLayer(self.blue)
+                self.__solveFaceMiddleLayer(self.red)
             else:
                 break
 
             if not middleLayerSolved():
-                self.solveFaceMiddleLayer(self.orange)
-                self.solveFaceMiddleLayer(self.blue)
-                self.solveFaceMiddleLayer(self.red)
-                self.solveFaceMiddleLayer(self.green)
+                self.__solveFaceMiddleLayer(self.orange)
+                self.__solveFaceMiddleLayer(self.blue)
+                self.__solveFaceMiddleLayer(self.red)
+                self.__solveFaceMiddleLayer(self.green)
             else:
                 break
 
             if not middleLayerSolved():
-                self.solveFaceMiddleLayer(self.blue)
-                self.solveFaceMiddleLayer(self.red)
-                self.solveFaceMiddleLayer(self.green)
-                self.solveFaceMiddleLayer(self.orange)
+                self.__solveFaceMiddleLayer(self.blue)
+                self.__solveFaceMiddleLayer(self.red)
+                self.__solveFaceMiddleLayer(self.green)
+                self.__solveFaceMiddleLayer(self.orange)
             else:
                 break
 
     # solving the final layer
 
-    def doYellowLineAlgorithm(self, frontFace): #algorithm for when theres a line or a dot on the yellow face
+    def __doYellowLineAlgorithm(self, frontFace): #algorithm for when theres a line or a dot on the yellow face
         #note that frontFace could actually vary, and should never be self.yellow
         topFace = self.findFace(frontFace, 'top') #this should always return self.yellow
         rightFace = self.findFace(frontFace, 'right')
@@ -466,7 +465,7 @@ class StandardCube(Cube):
         self.rotateCCW(topFace)
         self.rotateCCW(frontFace)
     
-    def doYellowLAlgorithm(self, frontFace): #the algorithm for when there is an 'L' shape on the yellow face
+    def __doYellowLAlgorithm(self, frontFace): #the algorithm for when there is an 'L' shape on the yellow face
         topFace = self.findFace(frontFace, 'top')
         rightFace = self.findFace(frontFace, 'right')
 
@@ -477,7 +476,7 @@ class StandardCube(Cube):
         self.rotateCCW(rightFace)
         self.rotateCCW(frontFace)
 
-    def solveYellowCross(self): #gets the yellow cross
+    def _solveYellowCross(self): #gets the yellow cross
         face = self.red
         topFace = self.findFace(face, 'top') #this will always return yellow when face = self.red
 
@@ -499,16 +498,16 @@ class StandardCube(Cube):
                 self.rotateCW(topFace)
 
             if getNumEdges() == 0:
-                self.doYellowLineAlgorithm(face)
+                self.__doYellowLineAlgorithm(face)
             elif getNumEdges() == 2:
                 if topFace[3] == 'y' and topFace[5] == 'y': #topFace[1]==topFace[7]=='y' prevented by nested while loop
-                    self.doYellowLineAlgorithm(face)
+                    self.__doYellowLineAlgorithm(face)
                 else:
                     while topFace[1] != 'y' or topFace[3] != 'y':
                         self.rotateCW(topFace)
-                    self.doYellowLAlgorithm(face)
+                    self.__doYellowLAlgorithm(face)
 
-    def swapAdjacentYellowEdges(self, frontFace): #swaps a yellow edge with the next yellow edge going clockwise
+    def __swapAdjacentYellowEdges(self, frontFace): #swaps a yellow edge with the next yellow edge going clockwise
         #note that frontFace should never be yellow
         topFace = self.findFace(frontFace, 'top') #should always return yellow
         rightFace = self.findFace(frontFace, 'right')
@@ -523,7 +522,7 @@ class StandardCube(Cube):
         self.rotateCCW(rightFace)
         self.rotateCW(topFace)
 
-    def alignYellowCross(self): #aligns edge pieces of yellow cross. Note it uses a different algorithm from aligning the white cross
+    def _alignYellowCross(self): #aligns edge pieces of yellow cross. Note it uses a different algorithm from aligning the white cross
         topFace = self.yellow
         face = self.red
 
@@ -538,15 +537,15 @@ class StandardCube(Cube):
             #until the bottom edge matches the red face, so that part of the cube will always be aligned when we go through this loop
             #That is important because the code in this loop is structure around the assumption red[1]=='r'
             if self.blue[1] != 'b':
-                self.swapAdjacentYellowEdges(self.blue)
+                self.__swapAdjacentYellowEdges(self.blue)
             
             if self.orange[1] != 'o':
-                self.swapAdjacentYellowEdges(self.orange)
+                self.__swapAdjacentYellowEdges(self.orange)
 
             #here we are just swapping blue[1] with orange[1] and (if necessary) orange[1] and green[1] 
             #until things work out
 
-    def positionYellowCorners(self, frontFace):
+    def __positionYellowCorners(self, frontFace):
         topFace = self.findFace(frontFace, 'top')
         rightFace = self.findFace(frontFace, 'right')
         leftFace = self.findFace(frontFace, 'left')
@@ -560,7 +559,7 @@ class StandardCube(Cube):
         self.rotateCCW(topFace) # up prime
         self.rotateCW(leftFace) #left
 
-    def moveYellowCorner(self, frontFace):
+    def __moveYellowCorners(self, frontFace):
         rightFace = self.findFace(frontFace, 'right')
         bottomFace = self.findFace(frontFace, 'bottom')
 
@@ -569,7 +568,7 @@ class StandardCube(Cube):
         self.rotateCW(rightFace)
         self.rotateCW(bottomFace)
 
-    def solveYellowCorners(self): #gets the yellow corners into place, completing the cube
+    def _solveYellowCorners(self): #gets the yellow corners into place, completing the cube
         frontFace = self.red
         topFace = self.findFace(frontFace, 'top') #returns self.yellow
         rightFace = self.findFace(frontFace, 'right') #returns self.green
@@ -581,7 +580,7 @@ class StandardCube(Cube):
             elif frontFace[2]=='y' and rightFace[0]==frontFace[1] and topFace[8]==rightFace[1]:
                 return True
             elif frontFace[2]==frontFace[1] and rightFace[0]==rightFace[1] and topFace[8]=='y': #this is the one where everything
-               #is place correctly
+               #is placed correctly
                return True
             else:
                 return False
@@ -602,28 +601,28 @@ class StandardCube(Cube):
             return numGoodCorners
 
         while getNumGoodCorners() == 0:
-            self.positionYellowCorners(frontFace)
+            self.__positionYellowCorners(frontFace)
 
         while getNumGoodCorners() != 4:
             findGoodCorner()
-            self.positionYellowCorners(frontFace)
+            self.__positionYellowCorners(frontFace)
 
         while topFace != ['y']*9:
             findGoodCorner()
             while topFace[8] != 'y':
-                self.moveYellowCorner(frontFace)
+                self.__moveYellowCorners(frontFace)
             self.rotateCW(topFace)
         
-    def alignYellowFace(self): #aligns the yellow face
-        #technically this could be done by alignYellowCross(), this function is just here to be explicit about what it is doing
+    def _alignYellowFace(self): #aligns the yellow face
+        #technically this could be done by _alignYellowCross(), this function is just here to be explicit about what it is doing
         while self.red[1] != 'r':
             self.rotateCW(self.yellow)
     
     def solveYellowLayer(self): #master function for solving the yellow layer (the final layer)
-        self.solveYellowCross()
-        self.alignYellowCross()
-        self.solveYellowCorners()
-        self.alignYellowFace()
+        self._solveYellowCross()
+        self._alignYellowCross()
+        self._solveYellowCorners()
+        self._alignYellowFace()
 
     def solveCube(self): #master function to solve the cube
         self.solveWhiteLayer()
