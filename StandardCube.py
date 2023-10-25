@@ -372,8 +372,6 @@ class StandardCube(Cube):
         leftFace = self.findFace(frontFace, 'left')
         topFace = self.findFace(frontFace, 'top') #everytime solveFaceMiddleLayer() is called, this should just return self.yellow
         rightFace = self.findFace(frontFace, 'right')
-        bottomFace = self.findFace(frontFace, 'bottom') #this should return self.white everytime
-        # NOTE: I am not yet sure if bottomFace will ever need to be used
 
         frontFaceColor = frontFace[4]
 
@@ -393,12 +391,11 @@ class StandardCube(Cube):
                 self.rotateCW(topFace)
                 self.moveEdgeToMiddleLeft(frontFace)
             else:
-                numRotations = 1
-                while topFace[7] != leftEdgeColor and frontFace[1] != frontFaceColor and numRotations <= 4:
+                numRotations = 0
+                while topFace[7] != leftEdgeColor and frontFace[1] != frontFaceColor and numRotations < 4:
                     self.rotateCW(topFace)
                     numRotations += 1
-                if numRotations < 4:
-                    self.moveEdgeToMiddleLeft(frontFace)
+                self.moveEdgeToMiddleLeft(frontFace)
             
         if rightEdgecurrentColor != rightEdgeColor or frontFaceRightColor != frontFaceColor:
             if rightEdgecurrentColor == frontFaceColor: #the edge piece is in the right place but it is reversed
@@ -407,12 +404,11 @@ class StandardCube(Cube):
                 self.rotateCW(topFace)
                 self.moveEdgeToMiddleRight(frontFace)
             else:
-                numRotations = 1
-                while topFace[7] != rightEdgeColor and frontFace[1] != frontFaceColor and numRotations <= 4:
+                numRotations = 0
+                while topFace[7] != rightEdgeColor and frontFace[1] != frontFaceColor and numRotations < 4:
                     self.rotateCW(topFace)
                     numRotations += 1
-                if numRotations < 4:
-                    self.moveEdgeToMiddleRight(frontFace)
+                self.moveEdgeToMiddleRight(frontFace)
             
     def solveMiddleLayer(self): #master function that solves the middle layer of the whole cube
 
@@ -634,7 +630,7 @@ class StandardCube(Cube):
         self.solveMiddleLayer()
         self.solveYellowLayer()
     
-    def checkCubeSolved(self):
+    def checkCubeSolved(self): #returns True if the cube is actually solved and False otherwise
         if (self.white != ['w']*9 or self.blue != ['b']*9 or self.red != ['r']*9 or self.green != ['g']*9 or self.orange != ['o']*9
             or self.yellow != ['y']*9):
             return False
