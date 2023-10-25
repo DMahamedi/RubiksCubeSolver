@@ -2,12 +2,6 @@ from Cube import Cube
 
 class StandardCube(Cube):
 
-    """
-    NOTE:
-    USEFUL REFERENCE FOR GETTING THE GENERIC ALGORITHMS 
-    https://rubiks-cube-solver.com/how-to-solve/
-    """
-
     def __init__(self, white=['w']*9, red=['r']*9, blue=['b']*9, yellow=['y']*9, green=['g']*9, orange=['o']*9):
         super().__init__(white, red, blue, yellow, green, orange)
     
