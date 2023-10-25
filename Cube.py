@@ -2,16 +2,6 @@ import random
 
 class Cube:
 
-    """ 
-    DESCRIPTION AND PLANS
-    this program includes the basic functionality needed to solve a rubiks cube, including an ability to input
-    the cubes current state, the ability to rotate sides and keep track of what happens.
-    StandardCube() inherits from this class to solve the cube.
-    I plan to implement more sophisticated algorithms than the ones used in StandardCube.py, namely the algorithms listed
-    here:
-    https://en.wikipedia.org/wiki/Optimal_solutions_for_the_Rubik%27s_Cube#Thistlethwaite's_algorithm
-    """
-
     def __init__(self, white=['w']*9, red=['r']*9, blue=['b']*9, yellow=['y']*9, green=['g']*9, orange=['o']*9):
         self.white = white
         self.red = red
