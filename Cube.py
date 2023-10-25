@@ -69,26 +69,26 @@ class Cube:
 
     def printFace(self, face): #prints a specified face of the cube
         for i in range(3):
-            temp = [' '] * 3 + face[3*i: 3*i+3] + [' '] * 6
-            print(temp)
+            print(face[3*i:3*i+3])
+        print()
 
     def printCube(self): #prints the full cube in a nice format
     #note that you can see what 'color' a 9x9 grid is associated to by looking at the character in the middle (index 4)
     #note that that color piece will NEVER move
     #also be aware that this is the format of the cube the program is designed around
     #in other words, each 9x9 grid, top to bottom is oriented how the program treats each face
-        self.printFace(self.yellow)
+        for i in range(3):
+            temp = [' ']* 3 + self.yellow[3*i:3*i+3] + [' '] * 6
+            print(temp)
         for i in range(3):
             t = 3*i
             temp = self.blue[t:t+3] + self.red[t:t+3] + self.green[t:t+3] + self.orange[t:t+3]
             print(temp)
-        self.printFace(self.white)
+        for i in range(3):
+            temp = [' ']* 3 + self.yellow[3*i:3*i+3] + [' '] * 6
+            print(temp)
         print()
     
-    def printCubeImproved(self): # prints cube using full color names instead of abbreviations
-        #FIXME: ADD THIS FUNCTIONALITY
-        print("FIXME: FUNCTIONALITY NOT YET ADDED")
-
     def findFace(self, face, side): # given a face (red, white, etc.) and an assiociated side (front, back), returns face occupying that side
         match face:
             case self.white:
@@ -222,16 +222,23 @@ class Cube:
             face[8] = newColumn[2]
 
     def __findOutterTriplets(self, frontFace): #used for side cubies that are used rotating a face -- used by rotateCW()
-        #find the triplets on the outer edge of the face
-        #because the faces are described top to bottom relative to the bottom face
-        #the orientation of the cube means that for the program to access the triplets correctly while maintaing proper geometry,
-        #it needs to access them differently depending on which 'front face' we are using as a reference
-        #i.e. some cublets are part of a row from a different face, while others are part of a column
+        """
+        find the triplets on the outer edge of the face
+        because the faces are described top to bottom relative to the bottom face
+        the orientation of the cube means that for the program to access the triplets correctly while maintaing proper geometry,
+        it needs to access them differently depending on which 'front face' we are using as a reference
+        i.e. some cublets are part of a row from a different face, while others are part of a column
 
-        #this program handles it on a case by case basis, and for each of the four outter faces,
-        #it returns a list triplet containing the three cublets lining the front face, the face the cublets are from
-        # and whether they are part of a column (and if its a colun whether its the left or right one)
-        # or part of a row (and if its a row then whether its the left or right row) 
+        This program handles it on a case by case basis, and for each of the four outter faces,
+        it returns a list triplet containing the three cublets lining the front face, the face the cublets are from
+        and whether they are part of a column (and if its a colun whether its the left or right one)
+        or part of a row (and if its a row then whether its the left or right row) 
+
+        NOTE: sometimes the triplets need to reversed to get an accurate rotation. When it is necessary, an extra parameter (boolean True)
+        is used in the function calls.
+        When to use the extra True parameter is best accepted as the result of trial and error
+        """
+    
         #NOTE: outter faces will always be listed in the clockwise order of
         #topFace, rightFace, bottomFace, leftFace
         if frontFace == self.white: #red, green, orange, blue
