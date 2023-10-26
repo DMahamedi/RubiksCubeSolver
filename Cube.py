@@ -419,7 +419,7 @@ class Cube:
             self.rotateCW(face, False)
             #since scrambleCube() is mostly used for testing, we set it to ignore the changes it makes to the cube
 
-    def __simplifySolution(self): #takes the array containg the solution moves and makes it machine readable
+    def __simplifySolution(self): #takes the array containg the solution moves and makes it human-readable
         try:
             newSolutionMoves = []
             for i in range(len(self.movesToSolve)):
