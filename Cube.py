@@ -9,6 +9,7 @@ class Cube:
         self.yellow = yellow
         self.green = green
         self.orange = orange
+        self.movesToSolve = []
 
     def getWhite(self): #return white face
         return self.white
@@ -61,6 +62,21 @@ class Cube:
         for i in range(3):
             print(face[3*i:3*i+3])
         print()
+
+    def matchFaceToColor(self, face):
+        match face:
+            case self.white:
+                return 'white'
+            case self.blue:
+                return 'blue'
+            case self.red:
+                return 'red'
+            case self.green:
+                return 'green'
+            case self.orange:
+                return 'orange'
+            case self.yellow:
+                return 'yellow'
 
     def printCube(self): #prints the full cube in a nice format
     #note that you can see what 'color' a 9x9 grid is associated to by looking at the character in the middle (index 4)
@@ -156,19 +172,96 @@ class Cube:
 
     def matchColorToFace(self, color): #takes in color abbreviation like 'w' for white and spits back associated face (like 'r' becomes red)
         match color:
-            case 'w':
+            case 'white':
                 return self.white
-            case 'b':
+            case 'blue':
                 return self.blue
-            case 'r':
+            case 'red':
                 return self.red
-            case 'g':
+            case 'green':
                 return self.green
-            case 'o':
+            case 'orange':
                 return self.orange
-            case 'y':
+            case 'yellow':
                 return self.yellow
-            
+
+    def matchFaceToSide(self, firstFace, secondFace): #takes in a first and second face, returns position of the second face relative to the first (e.g. white, red returns 'top')
+        if firstFace == secondFace:
+            return 'front'
+        match firstFace:
+            case self.white:
+                match secondFace:
+                    case self.red:
+                        return 'top'
+                    case self.green:
+                        return 'right'
+                    case self.orange:
+                        return 'bottom'
+                    case self.blue:
+                        return 'right'
+                    case self.yellow:
+                        return 'back'
+            case self.blue:
+                match secondFace:
+                    case self.yellow:
+                        return 'top'
+                    case self.red:
+                        return 'right'
+                    case self.white:
+                        return 'bottom'
+                    case self.orange:
+                        return 'left'
+                    case self.green:
+                        return 'back'
+            case self.red:
+                match secondFace:
+                    case self.yellow:
+                        return 'top'
+                    case self.green:
+                        return 'right'
+                    case self.white:
+                        return 'bottom'
+                    case self.blue:
+                        return 'left'
+                    case self.orange:
+                        return 'back'
+            case self.green:
+                match secondFace:
+                    case self.yellow:
+                        return 'yellow'
+                    case self.orange:
+                        return 'right'
+                    case self.white:
+                        return 'bottom'
+                    case self.red:
+                        return 'right'
+                    case self.blue:
+                        return 'back'
+            case self.orange:
+                match secondFace:
+                    case self.yellow:
+                        return 'top'
+                    case self.blue:
+                        return 'right'
+                    case self.white:
+                        return 'bottom'
+                    case self.green:
+                        return 'left'
+                    case self.red:
+                        return 'back'
+            case self.yellow:
+                match secondFace:
+                    case self.orange:
+                        return 'top'
+                    case self.green:
+                        return 'right'
+                    case self.red:
+                        return 'bottom'
+                    case self.blue:
+                        return 'right'
+                    case self.white:
+                        return 'back'
+
     def __getFaceRows(self, face, row, reverse=False): #retrieves the faces top or bottom row -- used by __findOutterTriplets()
         #t for top and b for bottom
         triplet = []
@@ -244,7 +337,10 @@ class Cube:
         elif frontFace == self.orange: #yellow, blue, white, green
             return [self.__getFaceRows(self.yellow,'t',True), self.__getFaceCols(self.blue,'l'), self.__getFaceRows(self.white,'b',True), self.__getFaceCols(self.green,'r')]
 
-    def rotateCW(self, frontFace): # master function used for all rotations
+    def rotateCW(self, frontFace, trackMoves = True): # master function used for all rotations
+        #trackMoves says whether or not to add the rotations to the cube
+
+        self.movesToSolve.append(self.matchFaceToColor(frontFace))
 
         triplets = self.__findOutterTriplets(frontFace)
         lastTripletOld = triplets[3][0]
@@ -302,4 +398,47 @@ class Cube:
                     face = self.orange
                 case 6: #match face to yellow
                     face = self.yellow
-            self.rotateCW(face)
+            self.rotateCW(face, False)
+            #since scrambleCube() is mostly used for testing, we set it to ignore the changes it makes to the cube
+
+    def __simplifySolution(self): #takes the array containg the solution moves and makes it machine readable
+        try:
+            newSolutionMoves = []
+            for i in range(len(self.movesToSolve)):
+                if i > 0 and self.movesToSolve[i] == self.movesToSolve[i-1]:
+                    newSolutionMoves[-1][1] += 1
+                else:
+                    newSolutionMoves.append([self.movesToSolve[i], 1])
+            self.movesToSolve[:] = newSolutionMoves
+            newSolutionMoves = []
+
+            for i in range(len(self.movesToSolve)):
+                self.movesToSolve[i][1] %= 4
+                if self.movesToSolve[i][1] != 0:
+                    newSolutionMoves.append(self.movesToSolve[i])
+                else:
+                    continue
+            self.movesToSolve[:] = newSolutionMoves
+            newSolutionMoves = []
+
+            def convertNumRotationsToStr(numRotations):
+                match numRotations:
+                    case 1:
+                        return ' CW once'
+                    case 2:
+                        return ' CW twice'
+                    case 3:
+                        return ' CCW once'
+
+            for i in range(len(self.movesToSolve)):
+                s = self.matchFaceToSide(self.white, self.matchColorToFace(self.movesToSolve[i][0])) + convertNumRotationsToStr(self.movesToSolve[i][1])
+                newSolutionMoves.append(s)
+            self.movesToSolve[:] = newSolutionMoves
+        except:
+            pass
+
+    def printMovesToSolve(self): #prints the moves to solve the cube
+        self.__simplifySolution()
+        for i in range(0, len(self.movesToSolve), 10):
+            print(self.movesToSolve[i:i+10])
+            print()
