@@ -627,6 +627,8 @@ class StandardCube(Cube):
         self._solveYellowCorners()
         self._alignYellowFace()
 
+    #solving the cube and verifying
+
     def solveCube(self): #master function to solve the cube
         self.solveWhiteLayer()
         self.solveMiddleLayer()
