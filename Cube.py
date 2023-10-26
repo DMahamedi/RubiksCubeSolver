@@ -26,8 +26,26 @@ class Cube:
     def getGreen(self): #return green face
         return self.green
     
-    def getOrange(self): #return  face
+    def getOrange(self): #return orange face
         return self.orange
+
+    def setWhite(self, face=['w']*9):
+        self.white = face
+
+    def setBlue(self, face=['b']*9):
+        self.blue = face
+
+    def setRed(self, face=['r']*9):
+        self.red = face
+    
+    def setGreen(self, face=['g']*9):
+        self.green = face
+    
+    def setOrange(self, face=['o']*9):
+        self.orange = face
+    
+    def setYellow(self, face=['y']*9):
+        self.yellow = face
 
     def userOperation(self): #allows interactive modification of the cube
         userIn = ""
