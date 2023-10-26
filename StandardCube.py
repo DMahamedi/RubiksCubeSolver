@@ -2,6 +2,15 @@ from Cube import Cube
 
 class StandardCube(Cube):
 
+    """
+    TODO:
+    IMPROVE DOCUMENTATION OF ALL THE CODE
+    CHANGE ALL OF THE MEMBER FUNCTION NAMES:
+        - TRY TO STANDARDIZE HOW THE MEMBER FUNCTIONS ARE LABELLED
+            (regarding keywords like 'do', 'get', 'solve', 'find', etc.)
+        - GIVE ALGORITHM-FUNCTIONS NAMES THAT EXPLICITLY SHOW THEY CONTAIN ALGORITHMS
+    """
+
     def __init__(self, white=['w']*9, red=['r']*9, blue=['b']*9, yellow=['y']*9, green=['g']*9, orange=['o']*9):
         super().__init__(white, red, blue, yellow, green, orange)
     
