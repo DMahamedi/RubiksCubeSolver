@@ -11,6 +11,22 @@ class Cube:
         self.orange = orange
         self.movesToSolve = []
 
+        # dictionary below not currently in use
+        self.matchCharToFace = {'w': self.white, 'r': self.red, 'b': self.blue, 'y': self.yellow, 'g': self.green, 'o': self.orange}
+        
+        self.matchStringToFace = {'white': self.white, 'red': self.red, 'blue': self.blue, 'yellow': self.yellow, 'green': self.green, 'orange': self.orange}
+        # this will be used for easily taking in a list representing a face, and then finding which face it corresponds to.
+        # It seems redundant, but is necessary because hashmaps can't store lists as keys, since keys are dynamic.
+        
+        self.whiteFaces = {'front': self.white, 'top': self.red, 'right': self.green, 'bottom': self.orange, 'left': self.blue, 'back': self.yellow}
+        self.redFaces = {'front': self.red, 'top': self.yellow, 'right': self.green, 'bottom': self.white, 'left': self.blue, 'back': self.orange}
+        self.blueFaces = {'front': self.blue, 'top': self.yellow, 'right': self.red, 'bottom': self.white, 'left': self.orange, 'back': self.green}
+        self.yellowFaces = {'front': self.yellow, 'top': self.orange, 'right': self.green, 'bottom': self.red, 'left': self.blue, 'back': self.white}
+        self.greenFaces = {'front': self.green, 'top': self.yellow, 'right': self.orange, 'bottom': self.white, 'left': self.red, 'back': self.blue}
+        self.orangeFaces = {'front': self.orange, 'top': self.yellow, 'right': self.blue, 'bottom': self.white, 'left': self.green, 'back': self.red}
+        
+        self.matchFaceToColor = {'w': self.whiteFaces, 'r': self.redFaces, 'b': self.blueFaces, 'y': self.yellowFaces, 'g': self.greenFaces, 'o': self.orangeFaces}
+
     def getWhite(self): #return white face
         return self.white
     
@@ -81,7 +97,32 @@ class Cube:
             print(face[3*i:3*i+3])
         print()
 
-    def matchFaceToColor(self, face):
+    def printCube(self): #prints the full cube in a nice format
+    #note that you can see what 'color' a 9x9 grid is associated to by looking at the character in the middle (index 4)
+    #note that that color piece will NEVER move
+    #also be aware that this is the format of the cube the program is designed around
+    #in other words, each 9x9 grid, top to bottom is oriented how the program treats each face
+        for i in range(3):
+            temp = [' ']* 3 + self.yellow[3*i:3*i+3] + [' '] * 6
+            print(temp)
+        for i in range(3):
+            t = 3*i
+            temp = self.blue[t:t+3] + self.red[t:t+3] + self.green[t:t+3] + self.orange[t:t+3]
+            print(temp)
+        for i in range(3):
+            temp = [' ']* 3 + self.white[3*i:3*i+3] + [' '] * 6
+            print(temp)
+        print()
+    
+    def findFace(self, face, side): # given a face (red, white, etc.) and an assiociated side (front, back), returns face occupying that side
+        faceColor = face[4]
+        newFace = self.matchFaceToColor[faceColor][side]
+        return newFace
+
+    def __matchColorToFace(self, color): #takes in color abbreviation like 'w' for white and spits back associated face (like 'r' becomes red)
+        return self.matchStringToFace[color]
+
+    def __matchFaceToColor(self, face):
         match face:
             case self.white:
                 return 'white'
@@ -96,114 +137,8 @@ class Cube:
             case self.yellow:
                 return 'yellow'
 
-    def printCube(self): #prints the full cube in a nice format
-    #note that you can see what 'color' a 9x9 grid is associated to by looking at the character in the middle (index 4)
-    #note that that color piece will NEVER move
-    #also be aware that this is the format of the cube the program is designed around
-    #in other words, each 9x9 grid, top to bottom is oriented how the program treats each face
-        for i in range(3):
-            temp = [' ']* 3 + self.yellow[3*i:3*i+3] + [' '] * 6
-            print(temp)
-        for i in range(3):
-            t = 3*i
-            temp = self.blue[t:t+3] + self.red[t:t+3] + self.green[t:t+3] + self.orange[t:t+3]
-            print(temp)
-        for i in range(3):
-            temp = [' ']* 3 + self.yellow[3*i:3*i+3] + [' '] * 6
-            print(temp)
-        print()
-    
-    def findFace(self, face, side): # given a face (red, white, etc.) and an assiociated side (front, back), returns face occupying that side
-        match face:
-            case self.white:
-                match side:
-                    case 'top':
-                        return self.red
-                    case 'right':
-                        return self.green
-                    case 'bottom':
-                        return self.orange
-                    case 'left':
-                        return self.blue
-                    case 'back':
-                        return self.yellow
-            case self.red:
-                match side:
-                    case 'top':
-                        return self.yellow
-                    case 'right':
-                        return self.green
-                    case 'bottom':
-                        return self.white
-                    case 'left':
-                        return self.blue
-                    case 'back':
-                        return self.orange
-            case self.green:
-                match side:
-                    case 'top':
-                        return self.yellow
-                    case 'right':
-                        return self.orange
-                    case 'bottom':
-                        return self.white
-                    case 'left':
-                        return self.red
-                    case 'back':
-                        return self.blue
-            case self.blue:
-                match side:
-                    case 'top':
-                        return self.yellow
-                    case 'right':
-                        return self.red
-                    case 'bottom':
-                        return self.white
-                    case 'left':
-                        return self.orange
-                    case 'back':
-                        return self.green
-            case self.yellow:
-                match side:
-                    case 'top':
-                        return self.orange
-                    case 'right':
-                        return self.green
-                    case 'bottom':
-                        return self.red
-                    case 'left':
-                        return self.blue
-                    case 'back':
-                        return self.white
-            case self.orange:
-                match side:
-                    case 'top':
-                        return self.yellow
-                    case 'right':
-                        return self.blue
-                    case 'bottom':
-                        return self.white
-                    case 'left':
-                        return self.green
-                    case 'back':
-                        return self.red
-
-    def matchColorToFace(self, color): #takes in color abbreviation like 'w' for white and spits back associated face (like 'r' becomes red)
-        match color:
-            case 'white':
-                return self.white
-            case 'blue':
-                return self.blue
-            case 'red':
-                return self.red
-            case 'green':
-                return self.green
-            case 'orange':
-                return self.orange
-            case 'yellow':
-                return self.yellow
-
-    def matchFaceToSide(self, firstFace, secondFace): #takes in a first and second face, returns position of the second face relative to the first (e.g. white, red returns 'top')
+    def __matchFaceToSide(self, firstFace, secondFace): #takes in a first and second face, returns position of the second face relative to the first (e.g. white, red returns 'top')
+        #firstFace is essentially the frontFace which secondFace is in reference to
         if firstFace == secondFace:
             return 'front'
         match firstFace:
@@ -358,7 +293,8 @@ class Cube:
     def rotateCW(self, frontFace, trackMoves = True): # master function used for all rotations
         #trackMoves says whether or not to add the rotations to the cube
 
-        self.movesToSolve.append(self.matchFaceToColor(frontFace))
+        if trackMoves:
+            self.movesToSolve.append(self.__matchFaceToColor(frontFace))
 
         triplets = self.__findOutterTriplets(frontFace)
         lastTripletOld = triplets[3][0]
@@ -449,7 +385,7 @@ class Cube:
                         return ' CCW once'
 
             for i in range(len(self.movesToSolve)):
-                s = self.matchFaceToSide(self.white, self.matchColorToFace(self.movesToSolve[i][0])) + convertNumRotationsToStr(self.movesToSolve[i][1])
+                s = self.__matchFaceToSide(self.white, self.__matchColorToFace(self.movesToSolve[i][0])) + convertNumRotationsToStr(self.movesToSolve[i][1])
                 newSolutionMoves.append(s)
             self.movesToSolve[:] = newSolutionMoves
         except:
@@ -460,3 +396,4 @@ class Cube:
         for i in range(0, len(self.movesToSolve), 10):
             print(self.movesToSolve[i:i+10])
             print()
+        print(len(self.movesToSolve))
